@@ -1,3 +1,16 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -183,12 +196,12 @@ ten Digit decoding
             }
             
             // calculate the 4 syndromes
-            // s1        = (  d1           + d2           + d3           + d4           + d5           + d6           +d7            +d8            +d9            +d10)          mod 11 
-            syndromes[0] = (((wholeCode[0])+(wholeCode[1])+(wholeCode[2])+(wholeCode[3])+(wholeCode[4])+(wholeCode[5])+(wholeCode[6])+(wholeCode[7])+(wholeCode[8])+(wholeCode[9])) % 11);
+            // s1        = (  d1           +     d2           +     d3           +     d4           +     d5           +     d6           +     d7            +    d8            +    d9            +     d10)          mod 11 
+            syndromes[0] = (((wholeCode[0])+(    wholeCode[1])+(    wholeCode[2])+(    wholeCode[3])+(    wholeCode[4])+(    wholeCode[5])+(    wholeCode[6])+(    wholeCode[7])+(    wholeCode[8])+(     wholeCode[9])) % 11);
             // s2        =  ((d1           +(2*d2)            +(3*d3)            +(4*d4)            +(5*d5)            +(6*d6)            +(7*d7)            +(8*d8)            +(9*d9)            +(10*d10))          mod 11
             syndromes[1] = (((wholeCode[0])+(2 * wholeCode[1])+(3 * wholeCode[2])+(4 * wholeCode[3])+(5 * wholeCode[4])+(6 * wholeCode[5])+(7 * wholeCode[6])+(8 * wholeCode[7])+(9 * wholeCode[8])+(10 * wholeCode[9])) % 11);
-            // s3        = ( (d1)          +(4*d2)            +(9*d3)            +(5*d4)            +(3*d5)            +(3*d6)            +(5*d7)            +(9*d8)            +(4*d9)            +(d10))        mod 11
-            syndromes[2] = (((wholeCode[0])+(4 * wholeCode[1])+(9 * wholeCode[2])+(5 * wholeCode[3])+(3 * wholeCode[4])+(3 * wholeCode[5])+(5 * wholeCode[6])+(9 * wholeCode[7])+(4 * wholeCode[8])+(wholeCode[9])) % 11);
+            // s3        = ( (d1)          +(4*d2)            +(9*d3)            +(5*d4)            +(3*d5)            +(3*d6)            +(5*d7)            +(9*d8)            +(4*d9)            +(     d10))        mod 11
+            syndromes[2] = (((wholeCode[0])+(4 * wholeCode[1])+(9 * wholeCode[2])+(5 * wholeCode[3])+(3 * wholeCode[4])+(3 * wholeCode[5])+(5 * wholeCode[6])+(9 * wholeCode[7])+(4 * wholeCode[8])+(     wholeCode[9])) % 11);
             // s4        =  ((d1)          +(8*d2)            +(5*d3)            +(9*d4)            +(4*d5)            +(7*d6)            +(2*d7)            +(6*d8)            +(3*d9)            +(10*d10))          mod 11
             syndromes[3] = (((wholeCode[0])+(8 * wholeCode[1])+(5 * wholeCode[2])+(9 * wholeCode[3])+(4 * wholeCode[4])+(7 * wholeCode[5])+(2 * wholeCode[6])+(6 * wholeCode[7])+(3 * wholeCode[8])+(10 * wholeCode[9])) % 11);
  
@@ -218,7 +231,7 @@ ten Digit decoding
                 // P = (s3^2 - s2 * s4) mod 11 
                 R = ((((syndromes[2])*(syndromes[2])) - ((syndromes[1])*(syndromes[3]))) % 11);
                 
-                // account for % 11 returning negative values
+                // account for mod 11 returning negative values
                 if (P < 0)                
                     P = 11 + P;
                 
@@ -234,16 +247,19 @@ ten Digit decoding
                 /************************************************** 
                 ******************One Error************************
                 **************************************************/ 
-                // check whether P Q R are 0 for One Error
+                // check whether P=Q=R=0 for One Error
                 if ((P == 0) && (Q == 0) && (R == 0))
                 {
-                    // calculate position of the error with s2/s1 
-                    // - 1 for use with array
-                    posiOne = ((syndromes[1] / syndromes[0]) - 1);
+                    // calculate position of the error with s2/s1 corrected to (s2 * s1^-1) mod 11
+                    // then - 1 for correct position in array
+                    posiOne = (((syndromes[1] * inverse(syndromes[0],11)) % 11) - 1);
+                    // account for % 11 returning negative values
+                    if (posiOne < 0)                
+                        posiOne = 11 + posiOne;
                     // assign magnitude of error s1
                     magniOne = syndromes[0];
                     
-                    textOutput.append("Single Error at position: " + String.valueOf(syndromes[1]) + "/" + String.valueOf(syndromes[0]) + "=" + String.valueOf(posiOne + 1) + " with magnitude: " + magniOne + "\n");
+                    textOutput.append("Single Error at position: (" + String.valueOf(syndromes[1]) + "/" + String.valueOf(syndromes[0]) + ")mod11=" + String.valueOf(posiOne + 1) + " with magnitude: s1 = " + magniOne + "\n");
                     
                     textOutput.append("Original     : ");
                     // output original number to text box
@@ -257,9 +273,15 @@ ten Digit decoding
                             textOutput.append("]");
                         
                         textOutput.append(String.valueOf(wholeCode[x]));
+                        // add end bracket since previous if wont when error in 10th digit
+                        if ((posiOne == 9) && (x == 9))
+                            textOutput.append("]");   
                     }
                     // add magnitude of error to incorrect digit and mod by 11 to allow for wrap around
                     wholeCode[posiOne] = ((wholeCode[posiOne] - magniOne) % 11);
+                    // account for % 11 returning negative values
+                    if (wholeCode[posiOne] < 0)                
+                        wholeCode[posiOne] = 11 + wholeCode[posiOne];
                     
                     textOutput.append("\nCorrected : ");
                     // output corrected number to text box
@@ -273,6 +295,9 @@ ten Digit decoding
                             textOutput.append("]");
                         
                         textOutput.append(String.valueOf(wholeCode[x]));
+                        // add end bracket since previous if wont when error in 10th digit
+                        if ((posiOne == 9) && (x == 9))
+                            textOutput.append("]");                        
                     }
                     
                 }       /*************************************************/ 
@@ -291,17 +316,20 @@ ten Digit decoding
                     
                     
                     
-                    textOutput.append("ENTERED  ELSE");
+                    
                     //calculate the two positions and two magnitudes
-                    //               i = (- Q + √(Q2^2-4*P*R)) / 2*P
+                    //               i = (- Q + √(Q^2-4*P*R)) / 2*P
                     //position one = i = (((  -Q  ) +      √   ((Q2^2 )-(4 * P * R)) /  (2 * P)) 
                     i =                  (((-1 * Q) + Math.sqrt((Q * Q)-(4 * P * R))) / (2 * P));
                     // cast double to integer and - 1 to account for array
                     posiOne = ((int) i) - 1 ;
+
+textOutput.append("I = " + String.valueOf(posiOne) + "\n");        
+
 textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and " + String.valueOf(posiTwo) + " with magnitudes: " + String.valueOf(magniOne) + " and " + String.valueOf(magniTwo) + "\n");
 
-                    //               j = (- Q -  √(Q2^2-4*P*R)) / 2*P
-                    //position two = j = (((  -Q  ) -      √   ((Q2^2 )-(4 * P * R)) /  (2 * P)) 
+                    //               j = (- Q -  √(Q^2-4*P*R)) / 2*P
+                    //position two = j = (((  -Q  ) -      √   ((Q^2 )-(4 * P * R)) /  (2 * P)) 
                     j =                  (((-1 * Q) - Math.sqrt((Q * Q)-(4 * P * R))) / (2 * P));  
                     // cast double to integer and - 1 to account for array
                     posiTwo = ((int) j) - 1;
@@ -347,6 +375,9 @@ textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and 
                             textOutput.append("]");
                         
                         textOutput.append(String.valueOf(wholeCode[x]));
+                        // add end bracket since previous if wont when error in 10th digit 
+                        if (((posiOne == 9) || (posiTwo == 9)) && (x == 9))
+                            textOutput.append("]");   
                     }
                     // add magnitude of error to incorrect digits and mod by 11 to allow for wrap around
                     wholeCode[posiOne] = ((wholeCode[posiOne] + magniOne) % 11);
@@ -370,6 +401,9 @@ textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and 
                             textOutput.append("]");
                         
                         textOutput.append(String.valueOf(wholeCode[x]));
+                        // add end bracket since previous if wont when error in 10th digit 
+                        if (((posiOne == 9) || (posiTwo == 9)) && (x == 9))
+                            textOutput.append("]"); 
                     }
                     
                 } 
@@ -383,6 +417,34 @@ textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and 
             textOutput.append("Enter Code of Ten Digits");
         }
     }//GEN-LAST:event_decodeMouseClicked
+
+/****************************************************************
+* Function name     : inverse
+*    returns        : int                     
+*    arg1           : int : value of integer to return the inverse of 
+*    arg2           : int : value arg1 will be moduloded by
+* Created by        : Rong Yang
+* Source            : Cryptography lecture 2 Hamming Codes page 31
+* Description       : Extended Euclidean Algorithm of calculating inverse                    
+* Notes             : N/A
+***************************************************************/
+        
+    public int inverse(int a, int n) { 
+    int t = 0; int newt = 1; 
+    int r = n; int newr = a;    int q, temp;  
+    while(newr != 0) { 
+        q = r / newr;  /* integer division */        
+        temp = newt;   /* remember newt    */
+        newt = t - q*newt;
+        t = temp;
+        temp = newr;   /* remember newr    */
+        newr = r - q*newr;
+        r = temp;
+    } 
+    if(r > 1) return -1; /* not invertible */
+    if(t < 0) t = t + n; /* change to positive */
+    return t;
+    }
 
 /************************************************** 
     

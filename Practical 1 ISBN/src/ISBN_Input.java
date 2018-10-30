@@ -440,7 +440,18 @@ Calculate Modular Maths
         
         
     }//GEN-LAST:event_calculateMouseClicked
-
+    
+/****************************************************************
+* Function name     : inverse
+*    returns        : int                     
+*    arg1           : int : value of integer to return the inverse of 
+*    arg2           : int : value arg1 will be moduloded by
+* Created by        : Rong Yang
+* Source            : Cryptography lecture 2 Hamming Codes page 31
+* Description       : Extended Euclidean Algorithm of calculating inverse                    
+* Notes             : N/A
+***************************************************************/
+        
     public int inverse(int a, int n) { 
 	int t = 0; int newt = 1; 
 	int r = n; int newr = a;    int q, temp;  
