@@ -182,7 +182,7 @@ ten Digit decoding
         // P Q R i and j for use in error correction, temps values for use in calculation of i j
         int P = -1, Q = -1, R = -1, i = -1, j = -1, a = -1, b = -1, tempQ = -1, tempQ2 = -1, temp4PR = -1, tempSQRT = -1, tempPlusMinus = -1;
         // ints for error position and magnitude calculation.
-        int posiOne = 0, posiTwo = 0, magniOne = 0, magniTwo = 0;
+        int posiOne = 0, posiTwo = 0, magniA = 0, magniB = 0;
         
         //check code entered is correct length
         if (digits.length() == 10)
@@ -233,60 +233,44 @@ ten Digit decoding
 
                 // output P Q R to text box
                 textOutput.append("P: " + P + " Q: " + Q + " R: " + R + "\n");
-                
-                /************************************************** 
-                ******************One Error************************
-                **************************************************/ 
-                // check whether P=Q=R=0 for One Error
+
+                // check whether P=Q=R=0 for One Error . also possible for more that three errors to have P=Q=R=0
                 if ((P == 0) && (Q == 0) && (R == 0))
                 {
                     // calculate position of the error with s2/s1 corrected to (s2 * s1^-1) mod 11
-                    // then - 1 for correct position in array
-                    posiOne = ((mod11((syndromes[1] * inverse(syndromes[0],11)))) - 1);
+                    i = (mod11((syndromes[1] * inverse(syndromes[0],11))));
+                    // i - 1 to account for array starting at 0
+                    posiOne = i - 1;
                     // assign magnitude of error s1
-                    magniOne = syndromes[0];
+                    magniA = syndromes[0];
                     
-                    textOutput.append("Single Error at position: (" + String.valueOf(syndromes[1]) + "/" + String.valueOf(syndromes[0]) + ")mod11=" + String.valueOf(posiOne + 1) + " with magnitude: s1 = " + magniOne + "\n");
-                    
-                    textOutput.append("Original     : ");
-                    // output original number to text box
-                    for (int x = 0; x < 10; x++)
+                    /**************************************************/
+                    /*Three Or More Errors in Single Error Correction**/
+                    /**************************************************/
+                    //(Q2-4*P*R) doesn’t have a square root (under mod 11), or position value i is zero, or one of d1-d10 is corrected into 10
+                    if ((sqrt(((Q * Q) - 4 * P * R)) == -1) || (i == 0) || ((mod11(wholeCode[posiOne] - magniA)) == 10))
                     {
-                        // surround error with brackets
-                        if (x == (posiOne))
-                            textOutput.append("[");
-                        
-                        if (x == (posiOne + 1))
-                            textOutput.append("]");
-                        
-                        textOutput.append(String.valueOf(wholeCode[x]));
-                        // add end bracket since previous if wont when error in 10th digit
-                        if ((posiOne == 9) && (x == 9))
-                            textOutput.append("]");   
-                    }
-                    // add magnitude of error to incorrect digit and mod by 11 to allow for wrap around
-                    wholeCode[posiOne] = (mod11(wholeCode[posiOne] - magniOne));
-                    
-                    textOutput.append("\nCorrected : ");
-                    // output corrected number to text box
-                    for (int x = 0; x < 10; x++)
-                    {
-                        // surround correction with brackets
-                        if (x == (posiOne))
-                            textOutput.append("[");
-                        
-                        if (x == (posiOne + 1))
-                            textOutput.append("]");
-                        
-                        textOutput.append(String.valueOf(wholeCode[x]));
-                        // add end bracket since previous if wont when error in 10th digit
-                        if ((posiOne == 9) && (x == 9))
-                            textOutput.append("]");                        
+                        textOutput.append("Three or more errors have occured");
+                    }           /*************************************************/
+                    else        /*****************One Error Correction************/
+                    {           /*************************************************/
+                        textOutput.append("Single Error at position: (" + String.valueOf(syndromes[1]) + "/" + String.valueOf(syndromes[0]) + ")mod11=" + String.valueOf(posiOne + 1) + " with magnitude: s1 = " + magniA + "\n");
+
+                        textOutput.append("Original     : ");
+                        // output original number to text box
+                        printCode(wholeCode,posiOne);
+
+                        // add magnitude of error to incorrect digit and mod by 11 to allow for wrap around
+                        wholeCode[posiOne] = (mod11(wholeCode[posiOne] - magniA));
+
+                        textOutput.append("\nCorrected : ");
+                        // output corrected number to text box
+                        printCode(wholeCode,posiOne);      
                     }
                     
-                }       /*************************************************/ 
-                else    /*****************Two Errors**********************/
-                {       /*************************************************/
+                }        
+                else    
+                {       
 
                     
                     //calculate the two positions (i,j) and two magnitudes (a,b)
@@ -309,80 +293,46 @@ ten Digit decoding
                     // j = (- Q -  √(Q^2-4*P*R)) / 2*P
                    // -Q - √(Q^2-4*P*R)
                     tempPlusMinus = tempQ - tempSQRT;
-                    // (-Q + √(Q^2-4*P*R)) / 2*P   corrected to    -Q + √(Q^2-4*P*R) * inverse of 2 * P
+                    // (-Q - √(Q^2-4*P*R)) / 2*P   corrected to    -Q - √(Q^2-4*P*R) * inverse of 2 * P
                     j = mod11(tempPlusMinus * inverse(mod11((2 * P)),11));
                     // - 1 from j to account for array then assign to posiTwo
                     posiTwo = j - 1;   
 
                     //                b = (i*s1-s2) / (i-j)
                     //magnitude two = b = (((i * s1) - s2) / (i - j)) corrected to ((i * s1) - s2) * inverse(i-j)
-                    magniTwo =            mod11(((i * syndromes[0]) - syndromes[1]) * inverse(mod11(i - j)));
+                    magniB =            mod11(((i * syndromes[0]) - syndromes[1]) * inverse(mod11(i - j),11));
                     
                     //                a = s1 - b
                     //mangitude one = a = (s1           - b       )
-                    magniOne =            mod11(syndromes[0] - magniTwo);
+                    magniA =            mod11(syndromes[0] - magniB);
                     
 
-/***************************************************************************************************
-                    
-                    
-                    
-     Add checking for more than 2 errors here, probably              
-                    
-                    
-                    
-***************************************************************************************************/
-                    
-                    
-                    textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and " + String.valueOf(posiTwo) + " with magnitudes: " + String.valueOf(magniOne) + " and " + String.valueOf(magniTwo) + "\n");
-                    
-                    textOutput.append("Original : ");
-                    // output original number to text box
-                    for (int x = 0; x < 10; x++)
+                    /**************************************************/
+                    /*Three Or More Errors in Double Error Correction**/
+                    /**************************************************/
+                    //(Q2-4*P*R) doesn’t have a square root (under mod 11), or position value i or j is zero, or one of d1-d10 is corrected into 10
+                    if ((tempSQRT == -1) || (i == 0) || (j == 0) || ((mod11(wholeCode[posiOne] - magniA)) == 10) || ((mod11(wholeCode[posiTwo] - magniB)) == 10))
                     {
-                        // surround both errors with brackets
-                        if (x == (posiOne - 1))
-                            textOutput.append("[");
+                        textOutput.append("Three or more errors have occured");
                         
-                        if (x == (posiOne + 1))
-                            textOutput.append("]");
-                        
-                        if (x == (posiTwo - 1))
-                            textOutput.append("[");
-                        
-                        if (x == (posiTwo + 1))
-                            textOutput.append("]");
-                        
-                        textOutput.append(String.valueOf(wholeCode[x]));
-                        // add end bracket since previous if wont when error in 10th digit 
-                        if (((posiOne == 9) || (posiTwo == 9)) && (x == 9))
-                            textOutput.append("]");   
-                    }
-                    // add magnitude of error to incorrect digits and mod by 11 to allow for wrap around
-                    wholeCode[posiOne] = (mod11(wholeCode[posiOne] + magniOne));
-                    wholeCode[posiTwo] = (mod11(wholeCode[posiTwo] + magniTwo));
-                    
-                    textOutput.append("\nCorrected: ");
-                    // output corrected number to text box
-                    for (int x = 0; x < 10; x++)
-                    {
-                        // surround both corrections with brackets
-                        if (x == (posiOne - 1))
-                            textOutput.append("[");
-                        
-                        if (x == (posiOne + 1))
-                            textOutput.append("]");
-                        
-                        if (x == (posiTwo - 1))
-                            textOutput.append("[");
-                        
-                        if (x == (posiTwo + 1))
-                            textOutput.append("]");
-                        
-                        textOutput.append(String.valueOf(wholeCode[x]));
-                        // add end bracket since previous if wont when error in 10th digit 
-                        if (((posiOne == 9) || (posiTwo == 9)) && (x == 9))
-                            textOutput.append("]"); 
+                    }           /*************************************************/
+                    else        /*****************Two Errors Correction***********/
+                    {           /*************************************************/
+                        textOutput.append("Two Errors at positions: i = " + String.valueOf(i) + " and j = " + String.valueOf(j) + " with magnitudes: a = " + String.valueOf(magniA) + " and b = " + String.valueOf(magniB) + "\n");
+
+                        textOutput.append("Original    : ");
+                        // output original number to text box
+                        printCode(wholeCode,posiOne,posiTwo);
+
+                        // add magnitude of error to incorrect digits and mod by 11 to allow for wrap around
+                        // position i - a
+                        wholeCode[posiOne] = (mod11(wholeCode[posiOne] - magniA));
+                        // position j - b
+                        wholeCode[posiTwo] = (mod11(wholeCode[posiTwo] - magniB));
+
+                        textOutput.append("\nCorrected: ");
+                        // output corrected number to text box
+                        printCode(wholeCode,posiOne,posiTwo); 
                     }
                     
                 } 
@@ -397,6 +347,51 @@ ten Digit decoding
         }
     }//GEN-LAST:event_decodeMouseClicked
   
+/****************************************************************
+* Function name     : printCode
+*    returns        : void                     
+*    arg1 : int[]   : code    : integer array holding code to be printed
+*    arg2 : int     : posiOne : location in code for first error
+*    arg3 : int     : posiTwo :  optional location of second error
+* Created by        : Connor Parker
+* Description       : function to print 10 digit hamming code with [] 
+*                     surrounding either one or two errors
+* Notes             : Second error variable is made optional by overloading
+*                     the printCode method
+***************************************************************/    
+
+    public void printCode(int[] code, int posiOne, int posiTwo) 
+    { 
+        for (int x = 0; x < 10; x++)
+        {
+            // surround both corrections with brackets
+            if (x == (posiTwo + 1))
+                textOutput.append("]");
+
+            if (x == (posiOne + 1))
+                textOutput.append("]");
+            
+            if (x == (posiTwo))
+                textOutput.append("[");
+
+            if (x == (posiOne))
+                textOutput.append("[");
+
+
+            textOutput.append(String.valueOf(code[x]));
+            // add end bracket since previous if wont when error in 10th digit 
+            if (((posiOne == 9) || (posiTwo == 9)) && (x == 9))
+                textOutput.append("]"); 
+        }
+    }
+    
+    // overload printCode
+    public void printCode(int[] code, int posiOne) 
+    { 
+        // -2 to avoid [ at start of code
+        printCode(code,posiOne,-2);
+    }
+    
 /****************************************************************
 * Function name     : mod11
 *    returns        : int                     
@@ -457,9 +452,9 @@ ten Digit decoding
             case 9 :
                 answer = 3;
                 break;
-            // any other case should return 10 - 1 = 9    
+            // any other case returns - 1    
             default : 
-                answer = 9;
+                answer = -1;
                 
         }       
         
@@ -493,6 +488,8 @@ ten Digit decoding
     if(t < 0) t = t + n; /* change to positive */
     return t;
     }
+    
+/******************End of Code by Rong Yang***********************/  
 
 /************************************************** 
     
