@@ -1,16 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -21,9 +8,6 @@
  *
  * @author c29-parker
  */
-
-// import math for square root
-import java.lang.Math;
 
 public class BCHChecking extends javax.swing.JFrame {
 
