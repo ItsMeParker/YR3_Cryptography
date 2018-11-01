@@ -180,7 +180,7 @@ ten Digit decoding
         // array to hold calculated syndromes
         int[] syndromes = new int[4];
         // P Q R i and j for use in error correction
-        double P = -1, Q = -1, R = -1, i = -1, j = -1;
+        int P = -1, Q = -1, R = -1, i = -1, j = -1, tempQ = -1, tempQ2 = -1, temp4PR = -1, tempSQRT = -1, tempAdd = -1;
         // ints for error position and magnitude calculation.
         int posiOne = 0, posiTwo = 0, magniOne = 0, magniTwo = 0;
         
@@ -225,22 +225,12 @@ ten Digit decoding
             {
                 // calculate P Q and R
                 // P = (s2^2 - s1 * s3) mod 11
-                P = ((((syndromes[1])*(syndromes[1])) - ((syndromes[0])*(syndromes[2]))) % 11);
+                P = (mod11(((syndromes[1])*(syndromes[1])) - ((syndromes[0])*(syndromes[2]))));
                 // P = (s1 * s4 - s2 * s3) mod 11
-                Q = ((((syndromes[0])*(syndromes[3])) - ((syndromes[1])*(syndromes[2]))) % 11);
+                Q = (mod11(((syndromes[0])*(syndromes[3])) - ((syndromes[1])*(syndromes[2]))));
                 // P = (s3^2 - s2 * s4) mod 11 
-                R = ((((syndromes[2])*(syndromes[2])) - ((syndromes[1])*(syndromes[3]))) % 11);
-                
-                // account for mod 11 returning negative values
-                if (P < 0)                
-                    P = 11 + P;
-                
-                if (Q < 0)                
-                    Q = 11 + Q;
-                
-                if (R < 0)                
-                    R = 11 + R;
-                
+                R = (mod11(((syndromes[2])*(syndromes[2])) - ((syndromes[1])*(syndromes[3]))));
+
                 // output P Q R to text box
                 textOutput.append("P: " + P + " Q: " + Q + " R: " + R + "\n");
                 
@@ -308,7 +298,7 @@ ten Digit decoding
                     
                     
                     
-     Start here the calculations for posi one Two magni One Two DO NOT WORK               
+    CHANGE  % 11 TO MOD11 FUNCTION EVERYWHERE           
                     
                     
                     
@@ -320,17 +310,35 @@ ten Digit decoding
                     //calculate the two positions and two magnitudes
                     //               i = (- Q + √(Q^2-4*P*R)) / 2*P
                     //position one = i = (((  -Q  ) +      √   ((Q2^2 )-(4 * P * R)) /  (2 * P)) 
-                    i =                  (((-1 * Q) + Math.sqrt((Q * Q)-(4 * P * R))) / (2 * P));
+                    //i =                  (((-1 * Q) + Math.sqrt((Q * Q)-(4 * P * R))) / (2 * P));
                     // cast double to integer and - 1 to account for array
-                    posiOne = ((int) i) - 1 ;
+                    //posiOne = ((int) i) - 1 ;
+                    
+                    tempQ = (-1 * Q);
+textOutput.append("-1 * Q = " + String.valueOf(tempQ) + "\n");  
 
-textOutput.append("I = " + String.valueOf(posiOne) + "\n");        
+                    tempQ2 = (Q * Q);
+textOutput.append("Q * Q = " + String.valueOf(tempQ2) + "\n"); 
+
+                    temp4PR = mod11(4 * P * R);
+textOutput.append("(4 * P * R) = " + String.valueOf(temp4PR) + "\n"); 
+
+                    tempSQRT = sqrt(tempQ2 - temp4PR);
+textOutput.append("Math.sqrt(tempQ2 - temp4PR ) = " + String.valueOf(tempSQRT) + "\n");            
+                   
+                    tempAdd = tempQ + tempSQRT;
+textOutput.append("-Q + Math.sqrt((Q * Q)-(4 * P * R)) = " + String.valueOf(tempAdd) + "\n");  
+
+                    // tempAdd / 2 * P corrected to tempAdd * inverse of 2 * P
+                    i = mod11(tempAdd * inverse(mod11((2 * P)),11));
+textOutput.append("I = -Q + Math.sqrt((Q * Q)-(4 * P * R)) / 2 * P = " + String.valueOf(i) + "\n");  
+       
 
 textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and " + String.valueOf(posiTwo) + " with magnitudes: " + String.valueOf(magniOne) + " and " + String.valueOf(magniTwo) + "\n");
 
                     //               j = (- Q -  √(Q^2-4*P*R)) / 2*P
                     //position two = j = (((  -Q  ) -      √   ((Q^2 )-(4 * P * R)) /  (2 * P)) 
-                    j =                  (((-1 * Q) - Math.sqrt((Q * Q)-(4 * P * R))) / (2 * P));  
+                    //j =                  (((-1 * Q) - Math.sqrt((Q * Q)-(4 * P * R))) / (2 * P));  
                     // cast double to integer and - 1 to account for array
                     posiTwo = ((int) j) - 1;
 textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and " + String.valueOf(posiTwo) + " with magnitudes: " + String.valueOf(magniOne) + " and " + String.valueOf(magniTwo) + "\n");
@@ -418,6 +426,67 @@ textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and 
         }
     }//GEN-LAST:event_decodeMouseClicked
 
+/************************************************** 
+    
+Implementation of mod 11 with correction for negative values
+    
+**************************************************/      
+    
+    public int mod11(int input) 
+    { 
+        int answer = -1;
+        // mod input by 11
+        answer = input % 11;                    
+        // account for mod 11 returning negative values
+        if (answer < 0)                
+            answer = 11 + answer;     
+        
+        return answer;
+    }
+    
+/************************************************** 
+    
+Implementation of square root 
+    
+**************************************************/      
+    
+    public int sqrt(int input) 
+    { 
+        int answer = -1;
+        // ensure that input is within 1 to 10
+        input = mod11(input);
+        
+        // change value to return based on input 
+        switch(input) 
+        {
+            case 1 :
+                answer = 1;
+                break;
+                
+            case 3 :
+                answer = 5;
+                break;
+                
+            case 4 :
+                answer = 2;
+                break;
+                
+            case 5 :
+                answer = 4;
+                break;
+                
+            case 9 :
+                answer = 3;
+                break;
+            // any other case should return 10 - 1 = 9    
+            default : 
+                answer = 9;
+                
+        }       
+        
+        return answer;
+    }
+    
 /****************************************************************
 * Function name     : inverse
 *    returns        : int                     
