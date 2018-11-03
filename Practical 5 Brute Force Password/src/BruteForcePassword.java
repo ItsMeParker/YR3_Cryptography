@@ -156,7 +156,9 @@ Brute Force Password
         // https://dzone.com/articles/java-thread-tutorial-creating-threads-and-multithr
         // hold hashed password
         String passwordHash = input.getText();
-        
+        // create map of all possible characters in password a-z A-Z 0-9 null space 6 for loops one for each character in password
+	
+	
         
         
         String method = bruteForceMethod.getSelection().getActionCommand();
