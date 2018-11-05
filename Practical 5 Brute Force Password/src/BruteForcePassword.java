@@ -31,20 +31,15 @@ public class BruteForcePassword extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        bruteForceMethod = new javax.swing.ButtonGroup();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         input = new javax.swing.JTextField();
         Force = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         textOutput = new javax.swing.JTextArea();
-        simple = new javax.swing.JRadioButton();
-        simpleThreaded = new javax.swing.JRadioButton();
-        dictionary = new javax.swing.JRadioButton();
-        dictionaryThreaded = new javax.swing.JRadioButton();
-        rainbow = new javax.swing.JRadioButton();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
+        bruteForceMethod = new javax.swing.JComboBox<>();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -63,29 +58,13 @@ public class BruteForcePassword extends javax.swing.JFrame {
         textOutput.setRows(5);
         jScrollPane1.setViewportView(textOutput);
 
-        bruteForceMethod.add(simple);
-        simple.setSelected(true);
-        simple.setText("simple");
-        simple.setToolTipText("");
-        simple.setAutoscrolls(true);
-
-        bruteForceMethod.add(simpleThreaded);
-        simpleThreaded.setText("simple threaded");
-
-        bruteForceMethod.add(dictionary);
-        dictionary.setText("dictionary");
-
-        bruteForceMethod.add(dictionaryThreaded);
-        dictionaryThreaded.setText("dictionary threaded");
-
-        bruteForceMethod.add(rainbow);
-        rainbow.setText("rainbow");
-
         jTextField1.setEditable(false);
-        jTextField1.setText("Select Brute Force Method Below");
+        jTextField1.setText("Select Brute Force Method on Right");
 
         jTextField2.setEditable(false);
         jTextField2.setText("Enter Hashed Password to Break Below");
+
+        bruteForceMethod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Simple", "Simple Threaded", "Dictionary", "Dictionary Threaded", "Rainbow" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -94,30 +73,22 @@ public class BruteForcePassword extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(input)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(input)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(Force))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(simple)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(simpleThreaded)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(dictionary)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(dictionaryThreaded)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(rainbow))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 727, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(17, 17, 17))
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(454, 454, 454)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Force))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(bruteForceMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,80 +99,78 @@ public class BruteForcePassword extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(input, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Force))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(simpleThreaded)
-                    .addComponent(dictionary)
-                    .addComponent(dictionaryThreaded)
-                    .addComponent(rainbow)
-                    .addComponent(simple))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(16, 16, 16))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bruteForceMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-/************************************************** 
-    
+/**************************************************
+
 Brute Force Password
-    
-**************************************************/   
+
+**************************************************/
+
+    allCharacter
     
     private void ForceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ForceMouseClicked
         // password is a maximum of six lower-case letters and digits
         // https://dzone.com/articles/java-thread-tutorial-creating-threads-and-multithr
         // hold hashed password
         String passwordHash = input.getText();
+        
         // create map of all possible characters in password a-z A-Z 0-9 null space 6 for loops one for each character in password
-	
-	
-        
-        
-        String method = bruteForceMethod.getSelection().getActionCommand();
+        // order characters in map in order of most used to least used
 
-        if (bruteForceMethod.getSelection().getActionCommand() == "simple")
+
+
+        String method = bruteForceMethod.getItemAt(bruteForceMethod.getSelectedIndex());
+
+        if (method == "Simple")
         {
             textOutput.append(method + "m,etjdsf");
 
         }
-        else if (bruteForceMethod.getSelection().getActionCommand() == "simpleThreaded")
+        else if (method == "Simple Threaded")
         {
             textOutput.append("sdfsadfhsdlkjfhblkjbxzscouygesfb");
 
         }
-        
-        
+
+
     }//GEN-LAST:event_ForceMouseClicked
 
-/******************Following code is taken from practical 4 word document***********************/  
-//        
-//        try { 
-//                textOutput.append("SHA1 hash of string: " + toHash + " =\n" +SHA1(toHash) + "\n"); 
-//        } catch (NoSuchAlgorithmException e) { 
-//                // TODO Auto-generated catch block 
-//                e.printStackTrace(); 
-//        } catch (UnsupportedEncodingException e) { 
-//                // TODO Auto-generated catch block 
-//                e.printStackTrace(); 
-    
-/******************End of Code taken from practical 4.docx***********************/      
-    
+/******************Following code is taken from practical 4 word document***********************/
+//
+//        try {
+//                textOutput.append("SHA1 hash of string: " + toHash + " =\n" +SHA1(toHash) + "\n");
+//        } catch (NoSuchAlgorithmException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//        } catch (UnsupportedEncodingException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+
+/******************End of Code taken from practical 4.docx***********************/
+
 /****************************************************************
-* Function name     : 
-*    returns        :                      
-*    arg1           : 
-* Created by        : 
-* Description       :              
-* Notes             : N/A   
-***************************************************************/   
-   
-/******************Following code is taken from measuringCPUtimeInJava.docx***********************/ 
-    
-// a variable to remember the start time,  use the following methods 
+* Function name     :
+*    returns        :
+*    arg1           :
+* Created by        :
+* Description       :
+* Notes             : N/A
+***************************************************************/
+
+/******************Following code is taken from measuringCPUtimeInJava.docx***********************/
+
+// a variable to remember the start time,  use the following methods
 long timer = 0;
 
 void timeStart() {
@@ -210,7 +179,7 @@ void timeStart() {
 
 void timeStop(String s) {
         timer = System.currentTimeMillis() - timer;
-        if(s.equals("showMs") || s.equals("")) 
+        if(s.equals("showMs") || s.equals(""))
             System.out.println("Time taken is " + timer + "  milliseconds");
         else if(s.equals("showSec"))
             System.out.println("Time taken is " + timer/1000 + " seconds");
@@ -218,48 +187,48 @@ void timeStop(String s) {
             System.out.println("Time taken is " + timer/60000 + " munites and "
                     + (timer%60000)/1000 + " seconds");
         }
- }    
-/******************End of Code taken from measuringCPUtimeInJava.docx***********************/ 
-                              
-    
-//******************Following code is taken from practical 4.docx***********************/  
+ }
+/******************End of Code taken from measuringCPUtimeInJava.docx***********************/
 
-    private static String convertToHex(byte[] data) 
-    { 
-        StringBuffer buf = new StringBuffer(); 
-        for (int i = 0; i < data.length; i++) { 
-        	int halfbyte = (data[i] >>> 4) & 0x0F; 
-        	int two_halfs = 0; 
-        	do { 
-	            if ((0 <= halfbyte) && (halfbyte <= 9)) 
-	                buf.append((char) ('0' + halfbyte)); 
-	            else 
-	            	buf.append((char) ('a' + (halfbyte - 10))); 
-	            halfbyte = data[i] & 0x0F; 
-        	} while(two_halfs++ < 1); 
-        } 
-        return buf.toString(); 
-    }   
-     
-    public static String SHA1(String text)  
-    throws NoSuchAlgorithmException, UnsupportedEncodingException 
-    { 
-        MessageDigest md; 
-        md = MessageDigest.getInstance("SHA-1"); 
-        byte[] sha1hash = new byte[40]; 
-        md.update(text.getBytes("iso-8859-1"), 0, text.length()); 
-        sha1hash = md.digest(); 
-        return convertToHex(sha1hash); 
-    } 
-    
-/******************End of Code taken from practical 4.docx***********************/  
-    
-/************************************************** 
-    
+
+//******************Following code is taken from practical 4.docx***********************/
+
+    private static String convertToHex(byte[] data)
+    {
+        StringBuffer buf = new StringBuffer();
+        for (int i = 0; i < data.length; i++) {
+        	int halfbyte = (data[i] >>> 4) & 0x0F;
+        	int two_halfs = 0;
+        	do {
+	            if ((0 <= halfbyte) && (halfbyte <= 9))
+	                buf.append((char) ('0' + halfbyte));
+	            else
+	            	buf.append((char) ('a' + (halfbyte - 10)));
+	            halfbyte = data[i] & 0x0F;
+        	} while(two_halfs++ < 1);
+        }
+        return buf.toString();
+    }
+
+    public static String SHA1(String text)
+    throws NoSuchAlgorithmException, UnsupportedEncodingException
+    {
+        MessageDigest md;
+        md = MessageDigest.getInstance("SHA-1");
+        byte[] sha1hash = new byte[40];
+        md.update(text.getBytes("iso-8859-1"), 0, text.length());
+        sha1hash = md.digest();
+        return convertToHex(sha1hash);
+    }
+
+/******************End of Code taken from practical 4.docx***********************/
+
+/**************************************************
+
 END OF CUSTOM CODE
-    
-**************************************************/ 
-    
+
+**************************************************/
+
     /**
      * @param args the command line arguments
      */
@@ -267,7 +236,7 @@ END OF CUSTOM CODE
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -297,18 +266,13 @@ END OF CUSTOM CODE
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Force;
-    private javax.swing.ButtonGroup bruteForceMethod;
-    private javax.swing.JRadioButton dictionary;
-    private javax.swing.JRadioButton dictionaryThreaded;
     private javax.swing.JTextField input;
+    private javax.swing.JComboBox<String> bruteForceMethod;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JRadioButton rainbow;
-    private javax.swing.JRadioButton simple;
-    private javax.swing.JRadioButton simpleThreaded;
     private javax.swing.JTextArea textOutput;
     // End of variables declaration//GEN-END:variables
 }
