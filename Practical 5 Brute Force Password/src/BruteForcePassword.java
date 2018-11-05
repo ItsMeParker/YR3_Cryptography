@@ -2,6 +2,8 @@
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -31,6 +33,7 @@ public class BruteForcePassword extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bruteForceMethod = new javax.swing.ButtonGroup();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         input = new javax.swing.JTextField();
@@ -39,7 +42,7 @@ public class BruteForcePassword extends javax.swing.JFrame {
         textOutput = new javax.swing.JTextArea();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
-        bruteForceMethod = new javax.swing.JComboBox<>();
+        jComboBox2 = new javax.swing.JComboBox<>();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -64,7 +67,7 @@ public class BruteForcePassword extends javax.swing.JFrame {
         jTextField2.setEditable(false);
         jTextField2.setText("Enter Hashed Password to Break Below");
 
-        bruteForceMethod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Simple", "Simple Threaded", "Dictionary", "Dictionary Threaded", "Rainbow" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Simple", "Simple Threaded", "Dictionary", "Dictionary Threaded", "Rainbow" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -86,7 +89,7 @@ public class BruteForcePassword extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(bruteForceMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -102,7 +105,7 @@ public class BruteForcePassword extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bruteForceMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(20, Short.MAX_VALUE))
@@ -111,41 +114,162 @@ public class BruteForcePassword extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+/****************************************************************
+* Function name     : initialiseMaps
+*    returns        : void
+*    arg1           : N/A
+* Created by        : Connor Parker
+* Created on        : 05/11/2018
+* Description       : Map of all characters that may be in the password for use in other functions
+* Notes             : N/A
+***************************************************************/
+    Map unsorted = new HashMap();
+    Map sorted   = new HashMap();
+    
+    private void initialiseMaps()
+    {
+        // unsorted has characters listed a to z, 0 to 9 and has space and no space
+        unsorted.put(0,"");
+        unsorted.put(1," ");
+        unsorted.put(2,"a");
+        unsorted.put(3,"b");
+        unsorted.put(4,"c");
+        unsorted.put(5,"d");
+        unsorted.put(6,"e");
+        unsorted.put(7,"f");
+        unsorted.put(8,"g");
+        unsorted.put(9,"h");
+        unsorted.put(10,"i");
+        unsorted.put(11,"j");
+        unsorted.put(12,"k");
+        unsorted.put(13,"l");
+        unsorted.put(14,"m");
+        unsorted.put(15,"n");
+        unsorted.put(16,"o");
+        unsorted.put(17,"p");
+        unsorted.put(18,"q");
+        unsorted.put(19,"r");
+        unsorted.put(20,"s");
+        unsorted.put(21,"t");
+        unsorted.put(22,"u");
+        unsorted.put(23,"v");
+        unsorted.put(24,"w");
+        unsorted.put(25,"x");
+        unsorted.put(26,"y");
+        unsorted.put(27,"z");
+        unsorted.put(28,"0");
+        unsorted.put(29,"1");
+        unsorted.put(30,"2");
+        unsorted.put(31,"3");
+        unsorted.put(32,"4");
+        unsorted.put(33,"5");
+        unsorted.put(34,"6");
+        unsorted.put(35,"7");
+        unsorted.put(36,"8");
+        unsorted.put(37,"9");
+        
+        // sorted has characters listed 
+        // a to z listed in most common as per https://en.oxforddictionaries.com/explore/which-letters-are-used-most/ 
+        // 0 to 9 listed in most common as per https://www.scientificamerican.com/article/most-popular-numbers-grapes-of-math/ 
+        // and space and no space
+        sorted.put(0,"");
+        sorted.put(1," ");
+        sorted.put(2,"e");
+        sorted.put(3,"a");
+        sorted.put(4,"r");
+        sorted.put(5,"i");
+        sorted.put(6,"o");
+        sorted.put(7,"t");
+        sorted.put(8,"n");
+        sorted.put(9,"s");
+        sorted.put(10,"l");
+        sorted.put(11,"c");
+        sorted.put(12,"u");
+        sorted.put(13,"d");
+        sorted.put(14,"p");
+        sorted.put(15,"m");
+        sorted.put(16,"h");
+        sorted.put(17,"g");
+        sorted.put(18,"b");
+        sorted.put(19,"f");
+        sorted.put(20,"y");
+        sorted.put(21,"w");
+        sorted.put(22,"k");
+        sorted.put(23,"v");
+        sorted.put(24,"x");
+        sorted.put(25,"z");
+        sorted.put(26,"j");
+        sorted.put(27,"q");
+        sorted.put(28,"7");
+        sorted.put(29,"3");
+        sorted.put(30,"8");
+        sorted.put(31,"4");
+        sorted.put(32,"5");
+        sorted.put(33,"9");
+        sorted.put(34,"6");
+        sorted.put(35,"2");
+        sorted.put(36,"1");
+        sorted.put(37,"0");
+
+    }
+    
 /**************************************************
 
 Brute Force Password
 
 **************************************************/
-
-    allCharacter
     
     private void ForceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ForceMouseClicked
         // password is a maximum of six lower-case letters and digits
         // https://dzone.com/articles/java-thread-tutorial-creating-threads-and-multithr
         // hold hashed password
         String passwordHash = input.getText();
-        
-        // create map of all possible characters in password a-z A-Z 0-9 null space 6 for loops one for each character in password
-        // order characters in map in order of most used to least used
 
 
+        // if either map is unpopulated call function to populate them
+        if (unsorted.isEmpty() || unsorted.isEmpty())
+        {
+            initialiseMaps();
+        }
 
+        // get option selected in drop down box
         String method = bruteForceMethod.getItemAt(bruteForceMethod.getSelectedIndex());
 
-        if (method == "Simple")
+        // call different method depending on option chosed
+        switch (method) 
         {
-            textOutput.append(method + "m,etjdsf");
+            case "Simple":
 
+                break;
+            case "Simple Threaded":
+
+                break;
+            case "Dictionary":
+                
+                break;
+            case "Dictionary Threaded":
+             
+                break;
+            case "Rainbow":
+             
+                break;
+
+               
         }
-        else if (method == "Simple Threaded")
-        {
-            textOutput.append("sdfsadfhsdlkjfhblkjbxzscouygesfb");
-
-        }
-
-
+       
     }//GEN-LAST:event_ForceMouseClicked
 
+/****************************************************************
+* Function name     :
+*    returns        :
+*    arg1           :
+* Created by        :
+* Description       :
+* Notes             : N/A
+***************************************************************/
+    
+    
+    
 /******************Following code is taken from practical 4 word document***********************/
 //
 //        try {
@@ -266,8 +390,9 @@ END OF CUSTOM CODE
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Force;
+    private javax.swing.ButtonGroup bruteForceMethod;
     private javax.swing.JTextField input;
-    private javax.swing.JComboBox<String> bruteForceMethod;
+    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
