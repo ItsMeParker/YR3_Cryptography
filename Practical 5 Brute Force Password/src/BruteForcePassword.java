@@ -233,7 +233,7 @@ Brute Force Password
         }
 
         // get option selected in drop down box
-        String method = bruteForceMethod.getItemAt(bruteForceMethod.getSelectedIndex());
+        String method = "not";//bruteForceMethod.getItemAt(bruteForceMethod.getSelection());
 
         // call different method depending on option chosed
         switch (method) 

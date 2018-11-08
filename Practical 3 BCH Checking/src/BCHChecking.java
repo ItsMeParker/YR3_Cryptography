@@ -210,9 +210,9 @@ ten Digit decoding
                 // calculate P Q and R
                 // P = (s2^2 - s1 * s3) mod 11
                 P = (mod11(((syndromes[1])*(syndromes[1])) - ((syndromes[0])*(syndromes[2]))));
-                // P = (s1 * s4 - s2 * s3) mod 11
+                // Q = (s1 * s4 - s2 * s3) mod 11
                 Q = (mod11(((syndromes[0])*(syndromes[3])) - ((syndromes[1])*(syndromes[2]))));
-                // P = (s3^2 - s2 * s4) mod 11 
+                // R = (s3^2 - s2 * s4) mod 11 
                 R = (mod11(((syndromes[2])*(syndromes[2])) - ((syndromes[1])*(syndromes[3]))));
 
                 // output P Q R to text box
@@ -417,6 +417,9 @@ ten Digit decoding
         // change value to return based on input 
         switch(input) 
         {
+            case 0 : 
+                answer = 0;
+                break;
             case 1 :
                 answer = 1;
                 break;
