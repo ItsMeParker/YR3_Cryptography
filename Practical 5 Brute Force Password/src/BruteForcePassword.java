@@ -1,9 +1,11 @@
 
 import java.io.UnsupportedEncodingException;
+import static java.lang.reflect.Array.get;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -122,8 +124,9 @@ public class BruteForcePassword extends javax.swing.JFrame {
 * Description       : Map of all characters that may be in the password for use in other functions
 * Notes             : N/A
 ***************************************************************/
-    Map unsorted = new HashMap();
-    Map sorted   = new HashMap();
+    Map<Integer,String> unsorted = new HashMap();
+    Map<Integer,String> sorted   = new HashMap();
+    Map<Integer,String> charaSet = new HashMap();
 
     private void initialiseMaps()
     {
@@ -224,73 +227,169 @@ Brute Force Password
         // hold hashed password
         String passwordHash = input.getText();
 
-
         // if either map is unpopulated call function to populate them
-        if (unsorted.isEmpty() || unsorted.isEmpty())
+        if (unsorted.isEmpty() || sorted.isEmpty())
         {
             initialiseMaps();
+            // HARD CODED select which map to pull character from in possible password generation
+            // for sake of testing if different order of character affects breaking time
+            charaSet.putAll(unsorted);
         }
 
-        // get option selected in drop down box
+        // get method of password breaking selected in drop down box
         Object selected = chooseMethod.getSelectedItem();
-        
         String method = selected.toString();
 
+        // start a timer to measure CPU time taken to break passwordk
+        timeStart();
+        
         // call different method depending on option chosed
         switch (method)
         {
             case "Simple":
                 textOutput.append("entered Simple");
+                // call function for simple brute force password breaking from
+                simpleBreak(passwordHash,"");
                 break;
             case "Simple Threaded":
-
+                textOutput.setText("Simple Threaded Breaking not yet Implemented");
+                
+                // create threads and call simpleBreak with different start strings
+                // create list of threads so that once one finds it they can be killed
                 break;
             case "Dictionary":
-
+                textOutput.setText("Dictionary Breaking not yet Implemented");
                 break;
             case "Dictionary Threaded":
-
+                textOutput.setText("Dictionary Threaded Breaking not yet Implemented");
                 break;
             case "Rainbow":
+                textOutput.setText("Rainbow Breaking not yet Implemented");
 
                 break;
-
-
         }
+        
+        // end timer started above and output time taken
+        timeStop("showSec");
 
     }//GEN-LAST:event_ForceMouseClicked
 
 /****************************************************************
-* Function name     :
-*    returns        :
-*    arg1           :
-* Created by        :
-* Description       :
-* Notes             : N/A
+* Function name   : simpleBreak
+*    returns      : boolean
+*    arg1         : String : passwordHash
+*    arg1         : String : startFrom
+* Created by      : Connor Parker
+* Created on      : 08/11/2018
+* Description     : take a string to start creating hashes from and compare 
+*                   them to the password hash passed in
+* Notes           : return boolean so that if password is found other threads can be killed
 ***************************************************************/
 
-
-
+    private boolean simpleBreak(String passwordHash, String startFrom)
+    {
+        boolean found = false;
+        
+        String generatedHash = "";
+        
+        String generatedPassword = startFrom;
+        
+        // if string to start from is empty call get Next string to start from single character
+        if (Objects.equals(generatedPassword, ""))
+        {
+            generatedPassword = getNextString(startFrom);
+        }
+        
+        // continue to loop until password is found
+        while(found = false)
+        {
+            
+            // create a hash from the password string generated
 /******************Following code is taken from practical 4 word document***********************/
-//
-//        try {
-//                textOutput.append("SHA1 hash of string: " + toHash + " =\n" +SHA1(toHash) + "\n");
-//        } catch (NoSuchAlgorithmException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//        } catch (UnsupportedEncodingException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-
+            try {
+                generatedHash = SHA1(generatedPassword);
+            } catch (NoSuchAlgorithmException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } 
 /******************End of Code taken from practical 4.docx***********************/
+            
+            // compare the hash of the generated password to the hash of the real password
+            if (Objects.equals(generatedHash, passwordHash))
+            {
+                found = true;
+            }
+            
+            // generated password was not correct so generate next password to check
+            generatedPassword = getNextString(generatedPassword);
+            
+        }
+        
+        textOutput.setText( passwordHash + " Broken \n\n Password = " + generatedPassword);
+        
+        return found;
+
+    }
+    
+    
+/****************************************************************
+* Function name   : getNextString
+*    returns      : String
+*    arg1         : String : In 
+* Created by      : Connor Parker 
+* Created on      : 08/11/2018
+* Description     : recursive function that takes a string and returns the next 
+*                   string for the sake of looping through all possible strings
+* Notes           : Based upon function in tutorial 7 
+***************************************************************/
+    
+    private String getNextString(String In)
+    {
+        int length;
+        char change;
+        
+        length = In.length();
+        // if empty string passed in set string to first character in the character set
+        if (length == 0)
+        {
+            return charaSet.get(0);
+        }
+        
+        // if character at end of string is the character at the end of the character set
+        // e.g. in charaSet {a-z}    string aaz  z is end of charasSet
+        // - 1 from each value to account for array starting at 0
+        if (Objects.equals(In.charAt(length - 1), charaSet.get((charaSet.size() - 1))))
+        {
+            // 
+            return getNextString(In.substring(0, length-1) + charaSet.get(0));            
+        }
+        // if character at the end of string is any other character in the character set 
+        // e.g. in charaSet {a-z}    string aac 
+        else
+        {
+            // 
+            change = (char)((int)In.charAt(length-1));
+            
+            // return part of string not changed with last character changed appended
+            return In.substring(0,length-1) + String.valueOf(change);
+        }
+        
+
+
+    }
+
 
 /****************************************************************
-* Function name     :
-*    returns        :
-*    arg1           :
-* Created by        :
-* Description       :
-* Notes             : N/A
+* Function name   :
+*    returns      :
+*    arg1         :
+* Created by      :
+* Created on      :
+* Description     :
+* Notes           : N/A
 ***************************************************************/
 
 /******************Following code is taken from measuringCPUtimeInJava.docx***********************/
@@ -400,4 +499,8 @@ END OF CUSTOM CODE
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextArea textOutput;
     // End of variables declaration//GEN-END:variables
+
+    private String get(Map charaSet) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
