@@ -228,9 +228,9 @@ ten Digit decoding
                     // assign magnitude of error s1
                     magniA = syndromes[0];
                     
-                    /**************************************************/
-                    /*Three Or More Errors in Single Error Correction**/
-                    /**************************************************/
+                    /***************************************************************/
+                    /*Three Or More Errors detected during Single Error Correction**/
+                    /***************************************************************/
                     //(Q2-4*P*R) doesn’t have a square root (under mod 11), or position value i is zero, or one of d1-d10 is corrected into 10
                     if ((sqrt(((Q * Q) - 4 * P * R)) == -1) || (i == 0) || ((mod11(wholeCode[posiOne] - magniA)) == 10))
                     {
@@ -291,9 +291,9 @@ ten Digit decoding
                     magniA =            mod11(syndromes[0] - magniB);
                     
 
-                    /**************************************************/
-                    /*Three Or More Errors in Double Error Correction**/
-                    /**************************************************/
+                    /***************************************************************/
+                    /*Three Or More Errors detected during Double Error Correction**/
+                    /***************************************************************/
                     //(Q2-4*P*R) doesn’t have a square root (under mod 11), or position value i or j is zero, or one of d1-d10 is corrected into 10
                     if ((tempSQRT == -1) || (i == 0) || (j == 0) || ((mod11(wholeCode[posiOne] - magniA)) == 10) || ((mod11(wholeCode[posiTwo] - magniB)) == 10))
                     {

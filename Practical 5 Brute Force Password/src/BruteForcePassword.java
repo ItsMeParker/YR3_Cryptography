@@ -33,7 +33,6 @@ public class BruteForcePassword extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        bruteForceMethod = new javax.swing.ButtonGroup();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         input = new javax.swing.JTextField();
@@ -42,7 +41,7 @@ public class BruteForcePassword extends javax.swing.JFrame {
         textOutput = new javax.swing.JTextArea();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        chooseMethod = new javax.swing.JComboBox<>();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -67,7 +66,7 @@ public class BruteForcePassword extends javax.swing.JFrame {
         jTextField2.setEditable(false);
         jTextField2.setText("Enter Hashed Password to Break Below");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Simple", "Simple Threaded", "Dictionary", "Dictionary Threaded", "Rainbow" }));
+        chooseMethod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Simple", "Simple Threaded", "Dictionary", "Dictionary Threaded", "Rainbow" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -87,9 +86,9 @@ public class BruteForcePassword extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(Force))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(chooseMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -105,7 +104,7 @@ public class BruteForcePassword extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(chooseMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(20, Short.MAX_VALUE))
@@ -125,7 +124,7 @@ public class BruteForcePassword extends javax.swing.JFrame {
 ***************************************************************/
     Map unsorted = new HashMap();
     Map sorted   = new HashMap();
-    
+
     private void initialiseMaps()
     {
         // unsorted has characters listed a to z, 0 to 9 and has space and no space
@@ -167,10 +166,10 @@ public class BruteForcePassword extends javax.swing.JFrame {
         unsorted.put(35,"7");
         unsorted.put(36,"8");
         unsorted.put(37,"9");
-        
-        // sorted has characters listed 
-        // a to z listed in most common as per https://en.oxforddictionaries.com/explore/which-letters-are-used-most/ 
-        // 0 to 9 listed in most common as per https://www.scientificamerican.com/article/most-popular-numbers-grapes-of-math/ 
+
+        // sorted has characters listed
+        // a to z listed in most common as per https://en.oxforddictionaries.com/explore/which-letters-are-used-most/
+        // 0 to 9 listed in most common as per https://www.scientificamerican.com/article/most-popular-numbers-grapes-of-math/
         // and space and no space
         sorted.put(0,"");
         sorted.put(1," ");
@@ -212,13 +211,13 @@ public class BruteForcePassword extends javax.swing.JFrame {
         sorted.put(37,"0");
 
     }
-    
+
 /**************************************************
 
 Brute Force Password
 
 **************************************************/
-    
+
     private void ForceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ForceMouseClicked
         // password is a maximum of six lower-case letters and digits
         // https://dzone.com/articles/java-thread-tutorial-creating-threads-and-multithr
@@ -233,30 +232,32 @@ Brute Force Password
         }
 
         // get option selected in drop down box
-        String method = "not";//bruteForceMethod.getItemAt(bruteForceMethod.getSelection());
+        Object selected = chooseMethod.getSelectedItem();
+        
+        String method = selected.toString();
 
         // call different method depending on option chosed
-        switch (method) 
+        switch (method)
         {
             case "Simple":
-
+                textOutput.append("entered Simple");
                 break;
             case "Simple Threaded":
 
                 break;
             case "Dictionary":
-                
+
                 break;
             case "Dictionary Threaded":
-             
+
                 break;
             case "Rainbow":
-             
+
                 break;
 
-               
+
         }
-       
+
     }//GEN-LAST:event_ForceMouseClicked
 
 /****************************************************************
@@ -267,9 +268,9 @@ Brute Force Password
 * Description       :
 * Notes             : N/A
 ***************************************************************/
-    
-    
-    
+
+
+
 /******************Following code is taken from practical 4 word document***********************/
 //
 //        try {
@@ -390,9 +391,8 @@ END OF CUSTOM CODE
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Force;
-    private javax.swing.ButtonGroup bruteForceMethod;
+    private javax.swing.JComboBox<String> chooseMethod;
     private javax.swing.JTextField input;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
