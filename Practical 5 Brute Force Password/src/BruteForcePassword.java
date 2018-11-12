@@ -4,6 +4,7 @@ import static java.lang.reflect.Array.get;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -115,106 +116,6 @@ public class BruteForcePassword extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-/****************************************************************
-* Function name     : initialiseMaps
-*    returns        : void
-*    arg1           : N/A
-* Created by        : Connor Parker
-* Created on        : 05/11/2018
-* Description       : Map of all characters that may be in the password for use in other functions
-* Notes             : N/A
-***************************************************************/
-    Map<Integer,String> unsorted = new HashMap();
-    Map<Integer,String> sorted   = new HashMap();
-    Map<Integer,String> charaSet = new HashMap();
-
-    private void initialiseMaps()
-    {
-        // unsorted has characters listed a to z, 0 to 9 and has space and no space
-        unsorted.put(0,"");
-        unsorted.put(1," ");
-        unsorted.put(2,"a");
-        unsorted.put(3,"b");
-        unsorted.put(4,"c");
-        unsorted.put(5,"d");
-        unsorted.put(6,"e");
-        unsorted.put(7,"f");
-        unsorted.put(8,"g");
-        unsorted.put(9,"h");
-        unsorted.put(10,"i");
-        unsorted.put(11,"j");
-        unsorted.put(12,"k");
-        unsorted.put(13,"l");
-        unsorted.put(14,"m");
-        unsorted.put(15,"n");
-        unsorted.put(16,"o");
-        unsorted.put(17,"p");
-        unsorted.put(18,"q");
-        unsorted.put(19,"r");
-        unsorted.put(20,"s");
-        unsorted.put(21,"t");
-        unsorted.put(22,"u");
-        unsorted.put(23,"v");
-        unsorted.put(24,"w");
-        unsorted.put(25,"x");
-        unsorted.put(26,"y");
-        unsorted.put(27,"z");
-        unsorted.put(28,"0");
-        unsorted.put(29,"1");
-        unsorted.put(30,"2");
-        unsorted.put(31,"3");
-        unsorted.put(32,"4");
-        unsorted.put(33,"5");
-        unsorted.put(34,"6");
-        unsorted.put(35,"7");
-        unsorted.put(36,"8");
-        unsorted.put(37,"9");
-
-        // sorted has characters listed
-        // a to z listed in most common as per https://en.oxforddictionaries.com/explore/which-letters-are-used-most/
-        // 0 to 9 listed in most common as per https://www.scientificamerican.com/article/most-popular-numbers-grapes-of-math/
-        // and space and no space
-        sorted.put(0,"");
-        sorted.put(1," ");
-        sorted.put(2,"e");
-        sorted.put(3,"a");
-        sorted.put(4,"r");
-        sorted.put(5,"i");
-        sorted.put(6,"o");
-        sorted.put(7,"t");
-        sorted.put(8,"n");
-        sorted.put(9,"s");
-        sorted.put(10,"l");
-        sorted.put(11,"c");
-        sorted.put(12,"u");
-        sorted.put(13,"d");
-        sorted.put(14,"p");
-        sorted.put(15,"m");
-        sorted.put(16,"h");
-        sorted.put(17,"g");
-        sorted.put(18,"b");
-        sorted.put(19,"f");
-        sorted.put(20,"y");
-        sorted.put(21,"w");
-        sorted.put(22,"k");
-        sorted.put(23,"v");
-        sorted.put(24,"x");
-        sorted.put(25,"z");
-        sorted.put(26,"j");
-        sorted.put(27,"q");
-        sorted.put(28,"7");
-        sorted.put(29,"3");
-        sorted.put(30,"8");
-        sorted.put(31,"4");
-        sorted.put(32,"5");
-        sorted.put(33,"9");
-        sorted.put(34,"6");
-        sorted.put(35,"2");
-        sorted.put(36,"1");
-        sorted.put(37,"0");
-
-    }
-
 /**************************************************
 
 Brute Force Password
@@ -226,15 +127,6 @@ Brute Force Password
         // https://dzone.com/articles/java-thread-tutorial-creating-threads-and-multithr
         // hold hashed password
         String passwordHash = input.getText();
-
-        // if either map is unpopulated call function to populate them
-        if (unsorted.isEmpty() || sorted.isEmpty())
-        {
-            initialiseMaps();
-            // HARD CODED select which map to pull character from in possible password generation
-            // for sake of testing if different order of character affects breaking time
-            charaSet.putAll(unsorted);
-        }
 
         // get method of password breaking selected in drop down box
         Object selected = chooseMethod.getSelectedItem();
@@ -293,16 +185,21 @@ Brute Force Password
         String generatedHash = "";
         
         String generatedPassword = startFrom;
+
+        // 
+        char[] charaSet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8',9};
+        //char[] charaSet = {'e','a','r','i','o','t','n','s','l','c','u','d','p','m','h','g','b','f','y','w','k','v','x','z','j','q','7','3','8','4','5','9','6','2','1',0};
         
         // if string to start from is empty call get Next string to start from single character
         if (Objects.equals(generatedPassword, ""))
         {
-            generatedPassword = getNextString(startFrom);
+            generatedPassword = getNextString(startFrom,charaSet,0);
         }
         
-        // continue to loop until password is found
-        while(found = false)
+        // continue loop until password is found
+        while(found == false)
         {
+            textOutput.append("gen: " + String.valueOf(generatedPassword));
             
             // create a hash from the password string generated
 /******************Following code is taken from practical 4 word document***********************/
@@ -324,7 +221,7 @@ Brute Force Password
             }
             
             // generated password was not correct so generate next password to check
-            generatedPassword = getNextString(generatedPassword);
+            generatedPassword = getNextString(generatedPassword,charaSet,0);
             
         }
         
@@ -346,35 +243,37 @@ Brute Force Password
 * Notes           : Based upon function in tutorial 7 
 ***************************************************************/
     
-    private String getNextString(String In)
+    private String getNextString(String Input, char[] charaSet, int last)
     {
         int length;
-        char change;
-        
-        length = In.length();
+        String out; 
+
+        length = Input.length();
         // if empty string passed in set string to first character in the character set
         if (length == 0)
         {
-            return charaSet.get(0);
+            return String.valueOf(charaSet[0]);
         }
         
         // if character at end of string is the character at the end of the character set
         // e.g. in charaSet {a-z}    string aaz  z is end of charasSet
-        // - 1 from each value to account for array starting at 0
-        if (Objects.equals(In.charAt(length - 1), charaSet.get((charaSet.size() - 1))))
+        // - 1 from each value to account for arrays starting at 0
+        if (Objects.equals(Input.charAt(length - 1), charaSet[(charaSet.length-1)]))
         {
-            // 
-            return getNextString(In.substring(0, length-1) + charaSet.get(0));            
+            // take whole string and append first character in character set
+            out = Input.substring(0, length-1) + charaSet[0];
+            // call recursively rather than looping
+            return getNextString(out,charaSet,0);            
         }
         // if character at the end of string is any other character in the character set 
         // e.g. in charaSet {a-z}    string aac 
         else
         {
             // 
-            change = (char)((int)In.charAt(length-1));
+            out = Input.substring(0, length-2) + charaSet[last+1];
             
             // return part of string not changed with last character changed appended
-            return In.substring(0,length-1) + String.valueOf(change);
+            return out;
         }
         
 
