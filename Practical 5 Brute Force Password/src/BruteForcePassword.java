@@ -185,6 +185,8 @@ Brute Force Password
         String generatedHash = "";
         
         String generatedPassword = startFrom;
+        
+        int last = 0;
 
         // 
         char[] charaSet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8',9};
@@ -221,7 +223,7 @@ Brute Force Password
             }
             
             // generated password was not correct so generate next password to check
-            generatedPassword = getNextString(generatedPassword,charaSet,0);
+            generatedPassword = getNextString(generatedPassword,charaSet,last);
             
         }
         
@@ -269,10 +271,12 @@ Brute Force Password
         // e.g. in charaSet {a-z}    string aac 
         else
         {
-            // 
-            out = Input.substring(0, length-2) + charaSet[last+1];
-            
-            // return part of string not changed with last character changed appended
+            // remove last character from string then appent next character in the character set 
+            out = Input.substring(0, length-1) + String.valueOf(charaSet[last+1]);
+            // increment value of last for use in the next recursion
+            last = last + 1;
+            textOutput.append(out + "\n");
+            // return string with last character incremented
             return out;
         }
         
