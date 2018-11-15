@@ -20,6 +20,8 @@ import java.util.Objects;
  */
 public class BruteForcePassword extends javax.swing.JFrame {
 
+    int last = 0;
+
     /**
      * Creates new form BruteForcePassword
      */
@@ -121,7 +123,88 @@ public class BruteForcePassword extends javax.swing.JFrame {
 Brute Force Password
 
 **************************************************/
+    Map<Integer,String> charaSet = new HashMap();
+    Map<String,Integer> keySet = new HashMap();
+    
+    private void initialiseMaps()
+    {        
+        charaSet.put(0, "a");
+        charaSet.put(1, "b");
+        charaSet.put(2, "c");
+        charaSet.put(3, "d");
+        charaSet.put(4, "e");
+        charaSet.put(5, "f");
+        charaSet.put(6, "g");
+        charaSet.put(7, "h");
+        charaSet.put(8, "i");
+        charaSet.put(9, "j");
+        charaSet.put(10,"k");
+        charaSet.put(11,"l");
+        charaSet.put(12,"m");
+        charaSet.put(13,"n");
+        charaSet.put(14,"o");
+        charaSet.put(15,"p");
+        charaSet.put(16,"q");
+        charaSet.put(17,"r");
+        charaSet.put(18,"s");
+        charaSet.put(19,"t");
+        charaSet.put(20,"u");
+        charaSet.put(21,"v");
+        charaSet.put(22,"w");
+        charaSet.put(23,"x");
+        charaSet.put(24,"y");
+        charaSet.put(25,"z");
+        charaSet.put(26,"0");
+        charaSet.put(27,"1");
+        charaSet.put(28,"2");
+        charaSet.put(29,"3");
+        charaSet.put(30,"4");
+        charaSet.put(31,"5");
+        charaSet.put(32,"6");
+        charaSet.put(33,"7");
+        charaSet.put(34,"8");
+        charaSet.put(35,"9");
 
+        keySet.put("a",0 );
+        keySet.put("b",1 );
+        keySet.put("c",2 );
+        keySet.put("d",3 );
+        keySet.put("e",4 );
+        keySet.put("f",5 );
+        keySet.put("g",6 );
+        keySet.put("h",7 );
+        keySet.put("i",8 );
+        keySet.put("j",9 );
+        keySet.put("k",10);
+        keySet.put("l",11);
+        keySet.put("m",12);
+        keySet.put("n",13);
+        keySet.put("o",14);
+        keySet.put("p",15);
+        keySet.put("q",16);
+        keySet.put("r",17);
+        keySet.put("s",18);
+        keySet.put("t",19);
+        keySet.put("u",20);
+        keySet.put("v",21);
+        keySet.put("w",22);
+        keySet.put("x",23);
+        keySet.put("y",24);
+        keySet.put("z",25);
+        keySet.put("0",26);
+        keySet.put("1",27);
+        keySet.put("2",28);
+        keySet.put("3",29);
+        keySet.put("4",30);
+        keySet.put("5",31);
+        keySet.put("6",32);
+        keySet.put("7",33);
+        keySet.put("8",34);
+        keySet.put("9",35); 
+        
+    }
+    
+    
     private void ForceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ForceMouseClicked
         // password is a maximum of six lower-case letters and digits
         // https://dzone.com/articles/java-thread-tutorial-creating-threads-and-multithr
@@ -139,7 +222,7 @@ Brute Force Password
         switch (method)
         {
             case "Simple":
-                textOutput.append("entered Simple");
+                textOutput.append("entered Simple \n");
                 // call function for simple brute force password breaking from
                 simpleBreak(passwordHash,"");
                 break;
@@ -185,24 +268,29 @@ Brute Force Password
         String generatedHash = "";
         
         String generatedPassword = startFrom;
+       
+        // if either map is unpopulated call function to populate them
+        if (charaSet.isEmpty() || keySet.isEmpty())
+        {
+            initialiseMaps();
+        }
         
-        int last = 0;
-
         // 
-        char[] charaSet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8',9};
-        //char[] charaSet = {'e','a','r','i','o','t','n','s','l','c','u','d','p','m','h','g','b','f','y','w','k','v','x','z','j','q','7','3','8','4','5','9','6','2','1',0};
+        //char[] charaSet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9'};
+        //char[] charaSet = {'e','a','r','i','o','t','n','s','l','c','u','d','p','m','h','g','b','f','y','w','k','v','x','z','j','q','7','3','8','4','5','9','6','2','1','0'};
+
         
         // if string to start from is empty call get Next string to start from single character
         if (Objects.equals(generatedPassword, ""))
         {
-            generatedPassword = getNextString(startFrom,charaSet,0);
+            generatedPassword = getNextString(startFrom);
         }
         
         // continue loop until password is found
         while(found == false)
         {
-            textOutput.append("gen: " + String.valueOf(generatedPassword));
-            
+            textOutput.append("gen: " + String.valueOf(generatedPassword) + "\n");
+            System.out.println("gen: " + String.valueOf(generatedPassword) + "\n");
             // create a hash from the password string generated
 /******************Following code is taken from practical 4 word document***********************/
             try {
@@ -223,11 +311,11 @@ Brute Force Password
             }
             
             // generated password was not correct so generate next password to check
-            generatedPassword = getNextString(generatedPassword,charaSet,last);
+            generatedPassword = getNextString(generatedPassword);
             
         }
         
-        textOutput.setText( passwordHash + " Broken \n\n Password = " + generatedPassword);
+        textOutput.append( passwordHash + " Broken \n\n Password = " + generatedPassword);
         
         return found;
 
@@ -245,44 +333,104 @@ Brute Force Password
 * Notes           : Based upon function in tutorial 7 
 ***************************************************************/
     
-    private String getNextString(String Input, char[] charaSet, int last)
+//    private String getNextString(String Input, char[] charaSet)
+//    {
+//        int length;
+//        String out; 
+//
+//        length = Input.length();
+//        // if empty string passed in set string to first character in the character set
+//        if (length == 0)
+//        {
+//            return String.valueOf(charaSet[0]);
+//        }
+//        
+//        // if character at end of string is the character at the end of the character set
+//        // e.g. in charaSet {a-z}    string aaz  z is end of charasSet
+//        // - 1 from each value to account for arrays starting at 0
+//        if (Objects.equals(Input.charAt(length - 1), charaSet[(charaSet.length-1)]))
+//        {
+//            System.out.println(Input.substring(0, length-1));
+//            out = Input.substring(0, length-1);
+//            // 
+//            last = 0;
+//            // call recursively rather than looping
+//            return getNextString(out,charaSet) + String.valueOf(charaSet[0]);            
+//        }
+//        // if character at the end of string is any other character in the character set 
+//        // e.g. in charaSet {a-z}    string aac 
+//        else
+//        {
+//            // remove last character from string then append next character in the character set 
+//            out = Input.substring(0, length-1) + String.valueOf(charaSet[last+1]);
+//            // increment value of last for use in the next recursion
+//            last = last + 1;
+//            textOutput.append(out + "\n");
+//            // return string with last character incremented
+//            return out;
+//        }
+//
+//    }
+    
+    private String getNextString(String Input)
     {
         int length;
         String out; 
+        String c;
 
         length = Input.length();
         // if empty string passed in set string to first character in the character set
         if (length == 0)
         {
-            return String.valueOf(charaSet[0]);
+            // return first character in the map of characters
+            return String.valueOf(charaSet.get(0));
         }
+        
+        //charaSet.get((charaSet.size() - 1))
         
         // if character at end of string is the character at the end of the character set
         // e.g. in charaSet {a-z}    string aaz  z is end of charasSet
         // - 1 from each value to account for arrays starting at 0
-        if (Objects.equals(Input.charAt(length - 1), charaSet[(charaSet.length-1)]))
+        if (Objects.equals(Input.charAt(length - 1), charaSet.get((charaSet.size() - 1))))
         {
-            // take whole string and append first character in character set
-            out = Input.substring(0, length-1) + charaSet[0];
+            System.out.println(Input.substring(0, length-1));
+            out = Input.substring(0, length-1);
+            
             // call recursively rather than looping
-            return getNextString(out,charaSet,0);            
+            return getNextString(out) + String.valueOf(charaSet.get(0));            
         }
         // if character at the end of string is any other character in the character set 
         // e.g. in charaSet {a-z}    string aac 
         else
         {
-            // remove last character from string then appent next character in the character set 
-            out = Input.substring(0, length-1) + String.valueOf(charaSet[last+1]);
+            c = String.valueOf(Input.charAt(length-1));
+            // remove last character from string then append next character in the character set 
+            out = Input.substring(0, length-1) + String.valueOf(charaSet.get((keySet.get(c)) + 1));
             // increment value of last for use in the next recursion
-            last = last + 1;
             textOutput.append(out + "\n");
             // return string with last character incremented
             return out;
         }
-        
-
 
     }
+    
+/*
+    
+    a-0
+    
+    a   a-0
+    b   a-0
+    ...
+    0   a-0
+    
+    a   a-0 a-0
+    b   a-0 a-0
+    ...
+    0   a-0 a-0
+    
+    
+    */
+    
 
 
 /****************************************************************
