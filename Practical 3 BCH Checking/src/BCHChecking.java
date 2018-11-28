@@ -1,16 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -21,9 +8,6 @@
  *
  * @author c29-parker
  */
-
-// import math for square root
-import java.lang.Math;
 
 public class BCHChecking extends javax.swing.JFrame {
 
@@ -133,14 +117,14 @@ Six Digit generation
             }
             
             // calculate the 4 check digits 
-            // d7        = ( (4*d1)            +(10*d2)            +(9*d3)            +(2*d4)            +(d5)          +(7*d6))            mod 11 
-            finalCode[6] = (((4 * finalCode[0])+(10 * finalCode[1])+(9 * finalCode[2])+(2 * finalCode[3])+(finalCode[4])+(7 * finalCode[5])) % 11);
-            // d8        = ( (7*d1)            +(8*d2)            +(7*d3)            +(d4)          +(9*d5)            +(6*d6))             mod 11 
-            finalCode[7] = (((7 * finalCode[0])+(8 * finalCode[1])+(7 * finalCode[2])+(finalCode[3])+(9 * finalCode[4])+(6 * finalCode[5])) % 11);
-            // d9        = ( (9*d1)            +(d2)          +(7*d3)            +(8*d4)            +(7*d5)            +(7*d6))             mod 11
-            finalCode[8] = (((9 * finalCode[0])+(finalCode[1])+(7 * finalCode[2])+(8 * finalCode[3])+(7 * finalCode[4])+(7 * finalCode[5])) % 11);
-            // d10       = ( (d1)          +(2*d2)            +(9*d3)            +(10*d4)            +(4*d5)            + (d6))          mod 11
-            finalCode[9] = (((finalCode[0])+(2 * finalCode[1])+(9 * finalCode[2])+(10 * finalCode[3])+(4 * finalCode[4])+(finalCode[5])) % 11);
+            // d7        = (      (4*d1)            +(10*d2)            +(9*d3)            +(2*d4)            +(d5)          +(7*d6))            mod 11 
+            finalCode[6] = (mod11((4 * finalCode[0])+(10 * finalCode[1])+(9 * finalCode[2])+(2 * finalCode[3])+(finalCode[4])+(7 * finalCode[5])));
+            // d8        = (      (7*d1)            +(8*d2)            +(7*d3)            +(d4)          +(9*d5)            +(6*d6))             mod 11 
+            finalCode[7] = (mod11((7 * finalCode[0])+(8 * finalCode[1])+(7 * finalCode[2])+(finalCode[3])+(9 * finalCode[4])+(6 * finalCode[5])));
+            // d9        = (      (9*d1)            +(d2)          +(7*d3)            +(8*d4)            +(7*d5)            +(7*d6))             mod 11
+            finalCode[8] = (mod11((9 * finalCode[0])+(finalCode[1])+(7 * finalCode[2])+(8 * finalCode[3])+(7 * finalCode[4])+(7 * finalCode[5])));
+            // d10       = (      (d1)          +(2*d2)            +(9*d3)            +(10*d4)            +(4*d5)            + (d6))          mod 11
+            finalCode[9] = (mod11((finalCode[0])+(2 * finalCode[1])+(9 * finalCode[2])+(10 * finalCode[3])+(4 * finalCode[4])+(finalCode[5])));
  
             // check that none of the check digits are 10
             if ((finalCode[6] == 10) || (finalCode[7] == 10) || (finalCode[8] == 10) || (finalCode[9] == 10))
@@ -179,10 +163,10 @@ ten Digit decoding
         int[] wholeCode = new int[10];
         // array to hold calculated syndromes
         int[] syndromes = new int[4];
-        // P Q R i and j for use in error correction
-        double P = -1, Q = -1, R = -1, i = -1, j = -1;
+        // P Q R i and j for use in error correction, temps values for use in calculation of i j
+        int P = -1, Q = -1, R = -1, i = -1, j = -1, a = -1, b = -1, tempQ = -1, tempQ2 = -1, temp4PR = -1, tempSQRT = -1, tempPlusMinus = -1;
         // ints for error position and magnitude calculation.
-        int posiOne = 0, posiTwo = 0, magniOne = 0, magniTwo = 0;
+        int posiOne = 0, posiTwo = 0, magniA = 0, magniB = 0;
         
         //check code entered is correct length
         if (digits.length() == 10)
@@ -196,14 +180,14 @@ ten Digit decoding
             }
             
             // calculate the 4 syndromes
-            // s1        = (  d1           +     d2           +     d3           +     d4           +     d5           +     d6           +     d7            +    d8            +    d9            +     d10)          mod 11 
-            syndromes[0] = (((wholeCode[0])+(    wholeCode[1])+(    wholeCode[2])+(    wholeCode[3])+(    wholeCode[4])+(    wholeCode[5])+(    wholeCode[6])+(    wholeCode[7])+(    wholeCode[8])+(     wholeCode[9])) % 11);
-            // s2        =  ((d1           +(2*d2)            +(3*d3)            +(4*d4)            +(5*d5)            +(6*d6)            +(7*d7)            +(8*d8)            +(9*d9)            +(10*d10))          mod 11
-            syndromes[1] = (((wholeCode[0])+(2 * wholeCode[1])+(3 * wholeCode[2])+(4 * wholeCode[3])+(5 * wholeCode[4])+(6 * wholeCode[5])+(7 * wholeCode[6])+(8 * wholeCode[7])+(9 * wholeCode[8])+(10 * wholeCode[9])) % 11);
-            // s3        = ( (d1)          +(4*d2)            +(9*d3)            +(5*d4)            +(3*d5)            +(3*d6)            +(5*d7)            +(9*d8)            +(4*d9)            +(     d10))        mod 11
-            syndromes[2] = (((wholeCode[0])+(4 * wholeCode[1])+(9 * wholeCode[2])+(5 * wholeCode[3])+(3 * wholeCode[4])+(3 * wholeCode[5])+(5 * wholeCode[6])+(9 * wholeCode[7])+(4 * wholeCode[8])+(     wholeCode[9])) % 11);
-            // s4        =  ((d1)          +(8*d2)            +(5*d3)            +(9*d4)            +(4*d5)            +(7*d6)            +(2*d7)            +(6*d8)            +(3*d9)            +(10*d10))          mod 11
-            syndromes[3] = (((wholeCode[0])+(8 * wholeCode[1])+(5 * wholeCode[2])+(9 * wholeCode[3])+(4 * wholeCode[4])+(7 * wholeCode[5])+(2 * wholeCode[6])+(6 * wholeCode[7])+(3 * wholeCode[8])+(10 * wholeCode[9])) % 11);
+            // s1        = (       d1           +     d2           +     d3           +     d4           +     d5           +     d6           +     d7            +    d8            +    d9            +     d10)          mod 11 
+            syndromes[0] = (mod11((wholeCode[0])+(    wholeCode[1])+(    wholeCode[2])+(    wholeCode[3])+(    wholeCode[4])+(    wholeCode[5])+(    wholeCode[6])+(    wholeCode[7])+(    wholeCode[8])+(     wholeCode[9])));
+            // s2        =  (     (d1           +(2*d2)            +(3*d3)            +(4*d4)            +(5*d5)            +(6*d6)            +(7*d7)            +(8*d8)            +(9*d9)            +(10*d10))          mod 11
+            syndromes[1] = (mod11((wholeCode[0])+(2 * wholeCode[1])+(3 * wholeCode[2])+(4 * wholeCode[3])+(5 * wholeCode[4])+(6 * wholeCode[5])+(7 * wholeCode[6])+(8 * wholeCode[7])+(9 * wholeCode[8])+(10 * wholeCode[9])));
+            // s3        = (      (d1)          +(4*d2)            +(9*d3)            +(5*d4)            +(3*d5)            +(3*d6)            +(5*d7)            +(9*d8)            +(4*d9)            +(     d10))        mod 11
+            syndromes[2] = (mod11((wholeCode[0])+(4 * wholeCode[1])+(9 * wholeCode[2])+(5 * wholeCode[3])+(3 * wholeCode[4])+(3 * wholeCode[5])+(5 * wholeCode[6])+(9 * wholeCode[7])+(4 * wholeCode[8])+(     wholeCode[9])));
+            // s4        = (      (d1)          +(8*d2)            +(5*d3)            +(9*d4)            +(4*d5)            +(7*d6)            +(2*d7)            +(6*d8)            +(3*d9)            +(10*d10))          mod 11
+            syndromes[3] = (mod11((wholeCode[0])+(8 * wholeCode[1])+(5 * wholeCode[2])+(9 * wholeCode[3])+(4 * wholeCode[4])+(7 * wholeCode[5])+(2 * wholeCode[6])+(6 * wholeCode[7])+(3 * wholeCode[8])+(10 * wholeCode[9])));
  
             // output the four syndromes
             textOutput.setText("Syndromes: ");
@@ -225,185 +209,114 @@ ten Digit decoding
             {
                 // calculate P Q and R
                 // P = (s2^2 - s1 * s3) mod 11
-                P = ((((syndromes[1])*(syndromes[1])) - ((syndromes[0])*(syndromes[2]))) % 11);
-                // P = (s1 * s4 - s2 * s3) mod 11
-                Q = ((((syndromes[0])*(syndromes[3])) - ((syndromes[1])*(syndromes[2]))) % 11);
-                // P = (s3^2 - s2 * s4) mod 11 
-                R = ((((syndromes[2])*(syndromes[2])) - ((syndromes[1])*(syndromes[3]))) % 11);
-                
-                // account for mod 11 returning negative values
-                if (P < 0)                
-                    P = 11 + P;
-                
-                if (Q < 0)                
-                    Q = 11 + Q;
-                
-                if (R < 0)                
-                    R = 11 + R;
-                
+                P = (mod11(((syndromes[1])*(syndromes[1])) - ((syndromes[0])*(syndromes[2]))));
+                // Q = (s1 * s4 - s2 * s3) mod 11
+                Q = (mod11(((syndromes[0])*(syndromes[3])) - ((syndromes[1])*(syndromes[2]))));
+                // R = (s3^2 - s2 * s4) mod 11 
+                R = (mod11(((syndromes[2])*(syndromes[2])) - ((syndromes[1])*(syndromes[3]))));
+
                 // output P Q R to text box
                 textOutput.append("P: " + P + " Q: " + Q + " R: " + R + "\n");
-                
-                /************************************************** 
-                ******************One Error************************
-                **************************************************/ 
-                // check whether P=Q=R=0 for One Error
+
+                // check whether P=Q=R=0 for One Error . also possible for more that three errors to have P=Q=R=0
                 if ((P == 0) && (Q == 0) && (R == 0))
                 {
                     // calculate position of the error with s2/s1 corrected to (s2 * s1^-1) mod 11
-                    // then - 1 for correct position in array
-                    posiOne = (((syndromes[1] * inverse(syndromes[0],11)) % 11) - 1);
-                    // account for % 11 returning negative values
-                    if (posiOne < 0)                
-                        posiOne = 11 + posiOne;
+                    i = (mod11((syndromes[1] * inverse(syndromes[0],11))));
+                    // i - 1 to account for array starting at 0
+                    posiOne = i - 1;
                     // assign magnitude of error s1
-                    magniOne = syndromes[0];
+                    magniA = syndromes[0];
                     
-                    textOutput.append("Single Error at position: (" + String.valueOf(syndromes[1]) + "/" + String.valueOf(syndromes[0]) + ")mod11=" + String.valueOf(posiOne + 1) + " with magnitude: s1 = " + magniOne + "\n");
-                    
-                    textOutput.append("Original     : ");
-                    // output original number to text box
-                    for (int x = 0; x < 10; x++)
+                    /***************************************************************/
+                    /*Three Or More Errors detected during Single Error Correction**/
+                    /***************************************************************/
+                    //(Q2-4*P*R) doesn’t have a square root (under mod 11), or position value i is zero, or one of d1-d10 is corrected into 10
+                    if ((sqrt(((Q * Q) - 4 * P * R)) == -1) || (i == 0) || ((mod11(wholeCode[posiOne] - magniA)) == 10))
                     {
-                        // surround error with brackets
-                        if (x == (posiOne))
-                            textOutput.append("[");
-                        
-                        if (x == (posiOne + 1))
-                            textOutput.append("]");
-                        
-                        textOutput.append(String.valueOf(wholeCode[x]));
-                        // add end bracket since previous if wont when error in 10th digit
-                        if ((posiOne == 9) && (x == 9))
-                            textOutput.append("]");   
-                    }
-                    // add magnitude of error to incorrect digit and mod by 11 to allow for wrap around
-                    wholeCode[posiOne] = ((wholeCode[posiOne] - magniOne) % 11);
-                    // account for % 11 returning negative values
-                    if (wholeCode[posiOne] < 0)                
-                        wholeCode[posiOne] = 11 + wholeCode[posiOne];
-                    
-                    textOutput.append("\nCorrected : ");
-                    // output corrected number to text box
-                    for (int x = 0; x < 10; x++)
-                    {
-                        // surround correction with brackets
-                        if (x == (posiOne))
-                            textOutput.append("[");
-                        
-                        if (x == (posiOne + 1))
-                            textOutput.append("]");
-                        
-                        textOutput.append(String.valueOf(wholeCode[x]));
-                        // add end bracket since previous if wont when error in 10th digit
-                        if ((posiOne == 9) && (x == 9))
-                            textOutput.append("]");                        
+                        textOutput.append("Three or more errors have occured");
+                    }           /*************************************************/
+                    else        /*****************One Error Correction************/
+                    {           /*************************************************/
+                        textOutput.append("Single Error at position: (" + String.valueOf(syndromes[1]) + "/" + String.valueOf(syndromes[0]) + ")mod11=" + String.valueOf(posiOne + 1) + " with magnitude: s1 = " + magniA + "\n");
+
+                        textOutput.append("Original     : ");
+                        // output original number to text box
+                        printCode(wholeCode,posiOne);
+
+                        // add magnitude of error to incorrect digit and mod by 11 to allow for wrap around
+                        wholeCode[posiOne] = (mod11(wholeCode[posiOne] - magniA));
+
+                        textOutput.append("\nCorrected : ");
+                        // output corrected number to text box
+                        printCode(wholeCode,posiOne);      
                     }
                     
-                }       /*************************************************/ 
-                else    /*****************Two Errors**********************/
-                {       /*************************************************/
+                }        
+                else    
+                {       
 
-/***************************************************************************************************
                     
-                    
-                    
-     Start here the calculations for posi one Two magni One Two DO NOT WORK               
-                    
-                    
-                    
-***************************************************************************************************/
-                    
-                    
-                    
-                    
-                    //calculate the two positions and two magnitudes
-                    //               i = (- Q + √(Q^2-4*P*R)) / 2*P
-                    //position one = i = (((  -Q  ) +      √   ((Q2^2 )-(4 * P * R)) /  (2 * P)) 
-                    i =                  (((-1 * Q) + Math.sqrt((Q * Q)-(4 * P * R))) / (2 * P));
-                    // cast double to integer and - 1 to account for array
-                    posiOne = ((int) i) - 1 ;
+                    //calculate the two positions (i,j) and two magnitudes (a,b)
+                    // i = (-Q + √(Q^2-4*P*R)) / 2*P
+                    // - Q                    
+                    tempQ = (-1 * Q);
+                    // Q^2 
+                    tempQ2 = (Q * Q);
+                    // (4 * P * R) modular 11 
+                    temp4PR = mod11(4 * P * R);
+                    // √(Q^2-4*P*R)
+                    tempSQRT = sqrt(tempQ2 - temp4PR);
+                   // -Q + √(Q^2-4*P*R)
+                    tempPlusMinus = tempQ + tempSQRT;
+                    // (-Q + √(Q^2-4*P*R)) / 2*P   corrected to    -Q + √(Q^2-4*P*R) * inverse of 2 * P
+                    i = mod11(tempPlusMinus * inverse(mod11((2 * P)),11));
+                    // - 1 from i to account for array then assign to posiOne
+                    posiOne = i - 1;     
 
-textOutput.append("I = " + String.valueOf(posiOne) + "\n");        
+                    // j = (- Q -  √(Q^2-4*P*R)) / 2*P
+                   // -Q - √(Q^2-4*P*R)
+                    tempPlusMinus = tempQ - tempSQRT;
+                    // (-Q - √(Q^2-4*P*R)) / 2*P   corrected to    -Q - √(Q^2-4*P*R) * inverse of 2 * P
+                    j = mod11(tempPlusMinus * inverse(mod11((2 * P)),11));
+                    // - 1 from j to account for array then assign to posiTwo
+                    posiTwo = j - 1;   
 
-textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and " + String.valueOf(posiTwo) + " with magnitudes: " + String.valueOf(magniOne) + " and " + String.valueOf(magniTwo) + "\n");
-
-                    //               j = (- Q -  √(Q^2-4*P*R)) / 2*P
-                    //position two = j = (((  -Q  ) -      √   ((Q^2 )-(4 * P * R)) /  (2 * P)) 
-                    j =                  (((-1 * Q) - Math.sqrt((Q * Q)-(4 * P * R))) / (2 * P));  
-                    // cast double to integer and - 1 to account for array
-                    posiTwo = ((int) j) - 1;
-textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and " + String.valueOf(posiTwo) + " with magnitudes: " + String.valueOf(magniOne) + " and " + String.valueOf(magniTwo) + "\n");
-
-                    //                b = (i*s1- s2) / (i - j)
-                    //magnitude two = b = (((i       * s1          ) - s2           ) / (i       - j      )) 
-                    magniTwo =            (((posiOne * syndromes[0]) - syndromes[1] ) / (posiOne - posiTwo));
+                    //                b = (i*s1-s2) / (i-j)
+                    //magnitude two = b = (((i * s1) - s2) / (i - j)) corrected to ((i * s1) - s2) * inverse(i-j)
+                    magniB =            mod11(((i * syndromes[0]) - syndromes[1]) * inverse(mod11(i - j),11));
                     
                     //                a = s1 - b
                     //mangitude one = a = (s1           - b       )
-                    magniOne =            (syndromes[0] - magniTwo);
+                    magniA =            mod11(syndromes[0] - magniB);
                     
 
-/***************************************************************************************************
-                    
-                    
-                    
-     Add checking for more than 2 errors here, probably              
-                    
-                    
-                    
-***************************************************************************************************/
-                    
-                    
-                    textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and " + String.valueOf(posiTwo) + " with magnitudes: " + String.valueOf(magniOne) + " and " + String.valueOf(magniTwo) + "\n");
-                    
-                    textOutput.append("Original : ");
-                    // output original number to text box
-                    for (int x = 0; x < 10; x++)
+                    /***************************************************************/
+                    /*Three Or More Errors detected during Double Error Correction**/
+                    /***************************************************************/
+                    //(Q2-4*P*R) doesn’t have a square root (under mod 11), or position value i or j is zero, or one of d1-d10 is corrected into 10
+                    if ((tempSQRT == -1) || (i == 0) || (j == 0) || ((mod11(wholeCode[posiOne] - magniA)) == 10) || ((mod11(wholeCode[posiTwo] - magniB)) == 10))
                     {
-                        // surround both errors with brackets
-                        if (x == (posiOne - 1))
-                            textOutput.append("[");
+                        textOutput.append("Three or more errors have occured");
                         
-                        if (x == (posiOne + 1))
-                            textOutput.append("]");
-                        
-                        if (x == (posiTwo - 1))
-                            textOutput.append("[");
-                        
-                        if (x == (posiTwo + 1))
-                            textOutput.append("]");
-                        
-                        textOutput.append(String.valueOf(wholeCode[x]));
-                        // add end bracket since previous if wont when error in 10th digit 
-                        if (((posiOne == 9) || (posiTwo == 9)) && (x == 9))
-                            textOutput.append("]");   
-                    }
-                    // add magnitude of error to incorrect digits and mod by 11 to allow for wrap around
-                    wholeCode[posiOne] = ((wholeCode[posiOne] + magniOne) % 11);
-                    wholeCode[posiTwo] = ((wholeCode[posiTwo] + magniTwo) % 11);
-                    
-                    textOutput.append("\nCorrected: ");
-                    // output corrected number to text box
-                    for (int x = 0; x < 10; x++)
-                    {
-                        // surround both corrections with brackets
-                        if (x == (posiOne - 1))
-                            textOutput.append("[");
-                        
-                        if (x == (posiOne + 1))
-                            textOutput.append("]");
-                        
-                        if (x == (posiTwo - 1))
-                            textOutput.append("[");
-                        
-                        if (x == (posiTwo + 1))
-                            textOutput.append("]");
-                        
-                        textOutput.append(String.valueOf(wholeCode[x]));
-                        // add end bracket since previous if wont when error in 10th digit 
-                        if (((posiOne == 9) || (posiTwo == 9)) && (x == 9))
-                            textOutput.append("]"); 
+                    }           /*************************************************/
+                    else        /*****************Two Errors Correction***********/
+                    {           /*************************************************/
+                        textOutput.append("Two Errors at positions: i = " + String.valueOf(i) + " and j = " + String.valueOf(j) + " with magnitudes: a = " + String.valueOf(magniA) + " and b = " + String.valueOf(magniB) + "\n");
+
+                        textOutput.append("Original    : ");
+                        // output original number to text box
+                        printCode(wholeCode,posiOne,posiTwo);
+
+                        // add magnitude of error to incorrect digits and mod by 11 to allow for wrap around
+                        // position i - a
+                        wholeCode[posiOne] = (mod11(wholeCode[posiOne] - magniA));
+                        // position j - b
+                        wholeCode[posiTwo] = (mod11(wholeCode[posiTwo] - magniB));
+
+                        textOutput.append("\nCorrected: ");
+                        // output corrected number to text box
+                        printCode(wholeCode,posiOne,posiTwo); 
                     }
                     
                 } 
@@ -417,7 +330,124 @@ textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and 
             textOutput.append("Enter Code of Ten Digits");
         }
     }//GEN-LAST:event_decodeMouseClicked
+  
+/****************************************************************
+* Function name     : printCode
+*    returns        : void                     
+*    arg1 : int[]   : code    : integer array holding code to be printed
+*    arg2 : int     : posiOne : location in code for first error
+*    arg3 : int     : posiTwo :  optional location of second error
+* Created by        : Connor Parker
+* Description       : function to print 10 digit hamming code with [] 
+*                     surrounding either one or two errors
+* Notes             : Second error variable is made optional by overloading
+*                     the printCode method
+***************************************************************/    
 
+    public void printCode(int[] code, int posiOne, int posiTwo) 
+    { 
+        for (int x = 0; x < 10; x++)
+        {
+            // surround both corrections with brackets
+            if (x == (posiTwo + 1))
+                textOutput.append("]");
+
+            if (x == (posiOne + 1))
+                textOutput.append("]");
+            
+            if (x == (posiTwo))
+                textOutput.append("[");
+
+            if (x == (posiOne))
+                textOutput.append("[");
+
+
+            textOutput.append(String.valueOf(code[x]));
+            // add end bracket since previous if wont when error in 10th digit 
+            if (((posiOne == 9) || (posiTwo == 9)) && (x == 9))
+                textOutput.append("]"); 
+        }
+    }
+    
+    // overload printCode
+    public void printCode(int[] code, int posiOne) 
+    { 
+        // -2 to avoid [ at start of code
+        printCode(code,posiOne,-2);
+    }
+    
+/****************************************************************
+* Function name     : mod11
+*    returns        : int                     
+*    arg1           : int : value of integer to return the modular 11 of 
+* Created by        : Connor Parker
+* Description       : Apply correction for % 11 returning negative values
+*                     to neaten code 
+* Notes             : N/A
+***************************************************************/    
+
+    public int mod11(int input) 
+    { 
+        int answer = -1;
+        // mod input by 11
+        answer = input % 11;                    
+        // account for mod 11 returning negative values
+        if (answer < 0)                
+            answer = 11 + answer;     
+        
+        return answer;
+    }
+    
+/****************************************************************
+* Function name     : sqrt
+*    returns        : int                     
+*    arg1           : int : value of integer to return the square root of 
+* Created by        : Connor Parker
+* Description       : Return value of square root according to table of Zn 
+*                     example found in lecture 3 BCH codes page 23                   
+* Notes             : N/A
+***************************************************************/    
+    
+    public int sqrt(int input) 
+    { 
+        int answer = -1;
+        // ensure that input is within 1 to 10
+        input = mod11(input);
+        
+        // change value to return based on input 
+        switch(input) 
+        {
+            case 0 : 
+                answer = 0;
+                break;
+            case 1 :
+                answer = 1;
+                break;
+                
+            case 3 :
+                answer = 5;
+                break;
+                
+            case 4 :
+                answer = 2;
+                break;
+                
+            case 5 :
+                answer = 4;
+                break;
+                
+            case 9 :
+                answer = 3;
+                break;
+            // any other case returns - 1    
+            default : 
+                answer = -1;
+                
+        }       
+        
+        return answer;
+    }
+    
 /****************************************************************
 * Function name     : inverse
 *    returns        : int                     
@@ -445,6 +475,8 @@ textOutput.append("Two Errors at positions: " + String.valueOf(posiOne) + " and 
     if(t < 0) t = t + n; /* change to positive */
     return t;
     }
+    
+/******************End of Code by Rong Yang***********************/  
 
 /************************************************** 
     
