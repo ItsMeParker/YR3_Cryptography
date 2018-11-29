@@ -168,7 +168,19 @@ Brute Force Password
         /* Alternate character set order based on most common characters used in english language 
         *  a to z listed in most common as per https://en.oxforddictionaries.com/explore/which-letters-are-used-most/ 
         *  0 to 9 listed in most common as per https://www.scientificamerican.com/article/most-popular-numbers-grapes-of-math/ 
-        *  just wanted to see if this would speed up password breaking
+        *  just wanted to see if this would speed up password breaking, I'm pretty sure it wouldnt work for random strings but  
+        *  would it change anything if the password contains english words?
+        *  Password    a to z      most common
+        *  this        1015
+        *  is          18
+        *  very        1165
+        *  simple      978140
+        *  fail7       8454
+        *  5you5       45066
+        *  3crack      1462480
+        *  1you1       38092
+
+
         charaSet.put(0, "e");
         charaSet.put(1, "a");
         charaSet.put(2, "r");
