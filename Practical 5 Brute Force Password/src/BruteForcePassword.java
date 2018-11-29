@@ -165,6 +165,60 @@ Brute Force Password
         charaSet.put(34,"8");
         charaSet.put(35,"9");
 
+        /* Alternate character set order based on most common characters used in english language 
+        *  a to z listed in most common as per https://en.oxforddictionaries.com/explore/which-letters-are-used-most/ 
+        *  0 to 9 listed in most common as per https://www.scientificamerican.com/article/most-popular-numbers-grapes-of-math/ 
+        *  just wanted to see if this would speed up password breaking, I'm pretty sure it wouldnt work for random strings but  
+        *  would it change anything if the password contains english words?
+        *  Password    a to z      most common
+        *  this        1015
+        *  is          18
+        *  very        1165
+        *  simple      978140
+        *  fail7       8454
+        *  5you5       45066
+        *  3crack      1462480
+        *  1you1       38092
+
+
+        charaSet.put(0, "e");
+        charaSet.put(1, "a");
+        charaSet.put(2, "r");
+        charaSet.put(3, "i");
+        charaSet.put(4, "o");
+        charaSet.put(5, "t");
+        charaSet.put(6, "n");
+        charaSet.put(7, "s");
+        charaSet.put(8, "l");
+        charaSet.put(9, "c");
+        charaSet.put(10,"u");
+        charaSet.put(11,"d");
+        charaSet.put(12,"p");
+        charaSet.put(13,"m");
+        charaSet.put(14,"h");
+        charaSet.put(15,"g");
+        charaSet.put(16,"b");
+        charaSet.put(17,"f");
+        charaSet.put(18,"y");
+        charaSet.put(19,"w");
+        charaSet.put(20,"k");
+        charaSet.put(21,"v");
+        charaSet.put(22,"x");
+        charaSet.put(23,"z");
+        charaSet.put(24,"j");
+        charaSet.put(25,"q");
+        charaSet.put(26,"7");
+        charaSet.put(27,"3");
+        charaSet.put(28,"8");
+        charaSet.put(29,"4");
+        charaSet.put(30,"5");
+        charaSet.put(31,"9");
+        charaSet.put(32,"6");
+        charaSet.put(33,"2");
+        charaSet.put(34,"1");
+        charaSet.put(35,"0");
+        */
+
         keySet.put("a",0 );
         keySet.put("b",1 );
         keySet.put("c",2 );
@@ -206,19 +260,23 @@ Brute Force Password
     
     
     private void ForceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ForceMouseClicked
-        // password is a maximum of six lower-case letters and digits
-        // https://dzone.com/articles/java-thread-tutorial-creating-threads-and-multithr
-        // hold hashed password
+        // hold hashed password 
         String passwordHash = input.getText();
 
         // get method of password breaking selected in drop down box
         Object selected = chooseMethod.getSelectedItem();
         String method = selected.toString();
+        
+        // if either map is unpopulated call function to populate them
+        if (charaSet.isEmpty() || keySet.isEmpty())
+        {
+            initialiseMaps();
+        }
 
         // start a timer to measure CPU time taken to break passwordk
         timeStart();
         
-        // call different method depending on option chosed
+        // call different method depending on option chosen
         switch (method)
         {
             case "Simple":
@@ -227,9 +285,9 @@ Brute Force Password
                 break;
             case "Simple Threaded":
                 textOutput.setText("Simple Threaded Breaking not yet Implemented");
-                
                 // create threads and call simpleBreak with different start strings
                 // create list of threads so that once one finds it they can be killed
+                // https://dzone.com/articles/java-thread-tutorial-creating-threads-and-multithr
                 break;
             case "Dictionary":
                 textOutput.setText("Dictionary Breaking not yet Implemented");
@@ -244,7 +302,7 @@ Brute Force Password
         }
         
         // end timer started above and output time taken
-        timeStop("showSec");
+        textOutput.append(" Broken in: " +  String.valueOf(timeStop("showMs")) + " Milli Seconds\n");             
 
     }//GEN-LAST:event_ForceMouseClicked
 
@@ -267,12 +325,6 @@ Brute Force Password
         String generatedHash = "";
         
         String generatedPassword = startFrom;
-       
-        // if either map is unpopulated call function to populate them
-        if (charaSet.isEmpty() || keySet.isEmpty())
-        {
-            initialiseMaps();
-        }
         
         // if string to start from is empty call get Next string to start from single character
         if (Objects.equals(generatedPassword, ""))
@@ -283,6 +335,7 @@ Brute Force Password
         // continue loop until password is found
         while(found == false)
         {
+
             // create a hash from the password string generated
 /******************Following code is taken from practical 4 word document***********************/
             try {
@@ -294,7 +347,7 @@ Brute Force Password
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             } 
-/******************End of Code taken from practical 4.docx***********************/
+/******************End of Code taken from practical 4.docx**************************************/
             
             // compare the hash of the generated password to the hash of the real password
             if (Objects.equals(generatedHash, passwordHash))
@@ -308,10 +361,9 @@ Brute Force Password
                 generatedPassword = getNextString(generatedPassword);
             }
 
-            
         }
         
-        textOutput.append( passwordHash + " Broken \n\n Password = " + generatedPassword);
+        textOutput.append( passwordHash + " Broken \n\n Password = " + generatedPassword + "\n");
         
         return found;
 
@@ -326,7 +378,7 @@ Brute Force Password
 * Created on      : 08/11/2018
 * Description     : recursive function that takes a string and returns the next 
 *                   string for the sake of looping through all possible strings
-* Notes           : Based upon function in tutorial 7 
+* Notes           : Based upon function in tutorial 7
 ***************************************************************/
     
     private String getNextString(String Input)
@@ -350,8 +402,9 @@ Brute Force Password
         // - 1 from each value to account for arrays starting at 0
         if (Objects.equals(String.valueOf(Input.charAt(length - 1)), charaSet.get((charaSet.size() - 1))))
         {
+            // out = whole string
             out = Input.substring(0, length-1);
-            // call recursively rather than looping 
+            // call recursively rather than looping
             return getNextString(out) + String.valueOf(charaSet.get(0));            
         }
         // if character at the end of string is any other character in the character set 
@@ -367,7 +420,7 @@ Brute Force Password
         }
 
     }
-
+    
 /****************************************************************
 * Function name   :
 *    returns      :
@@ -387,19 +440,31 @@ void timeStart() {
         timer = System.currentTimeMillis();
 }
 
-void timeStop(String s) {
-        timer = System.currentTimeMillis() - timer;
-        if(s.equals("showMs") || s.equals(""))
-            System.out.println("Time taken is " + timer + "  milliseconds");
-        else if(s.equals("showSec"))
-            System.out.println("Time taken is " + timer/1000 + " seconds");
-        else if(s.equals("showMin")) {
-            System.out.println("Time taken is " + timer/60000 + " munites and "
-                    + (timer%60000)/1000 + " seconds");
-        }
- }
 /******************End of Code taken from measuringCPUtimeInJava.docx***********************/
+/******************Following code is heavily based on measuringCPUtimeInJava.docx***********************/
+// changes made to return timer value for sake of output to form
 
+long timeStop(String s) 
+{
+        timer = System.currentTimeMillis() - timer;
+
+        if(s.equals("showMs") || s.equals(""))
+        {
+            // do nothing timer is already in milli seconds
+        }
+        else if(s.equals("showSec"))
+        {
+            timer = timer/1000;
+        }
+        else if(s.equals("showMin")) 
+        {
+            timer = timer/60000;
+        }
+
+        return timer;
+ }
+
+/******************End of Code based on from measuringCPUtimeInJava.docx***********************/
 
 //******************Following code is taken from practical 4.docx***********************/
 
