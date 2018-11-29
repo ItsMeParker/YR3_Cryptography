@@ -222,7 +222,6 @@ Brute Force Password
         switch (method)
         {
             case "Simple":
-                textOutput.append("entered Simple \n");
                 // call function for simple brute force password breaking from
                 simpleBreak(passwordHash,"");
                 break;
@@ -275,11 +274,6 @@ Brute Force Password
             initialiseMaps();
         }
         
-        // 
-        //char[] charaSet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9'};
-        //char[] charaSet = {'e','a','r','i','o','t','n','s','l','c','u','d','p','m','h','g','b','f','y','w','k','v','x','z','j','q','7','3','8','4','5','9','6','2','1','0'};
-
-        
         // if string to start from is empty call get Next string to start from single character
         if (Objects.equals(generatedPassword, ""))
         {
@@ -289,8 +283,6 @@ Brute Force Password
         // continue loop until password is found
         while(found == false)
         {
-            textOutput.append("gen: " + String.valueOf(generatedPassword) + "\n");
-            System.out.println("gen: " + String.valueOf(generatedPassword) + "\n");
             // create a hash from the password string generated
 /******************Following code is taken from practical 4 word document***********************/
             try {
@@ -310,8 +302,12 @@ Brute Force Password
                 found = true;
             }
             
-            // generated password was not correct so generate next password to check
-            generatedPassword = getNextString(generatedPassword);
+            if (found == false)
+            {
+                // generated password was not correct so generate next password to check
+                generatedPassword = getNextString(generatedPassword);
+            }
+
             
         }
         
@@ -333,45 +329,6 @@ Brute Force Password
 * Notes           : Based upon function in tutorial 7 
 ***************************************************************/
     
-//    private String getNextString(String Input, char[] charaSet)
-//    {
-//        int length;
-//        String out; 
-//
-//        length = Input.length();
-//        // if empty string passed in set string to first character in the character set
-//        if (length == 0)
-//        {
-//            return String.valueOf(charaSet[0]);
-//        }
-//        
-//        // if character at end of string is the character at the end of the character set
-//        // e.g. in charaSet {a-z}    string aaz  z is end of charasSet
-//        // - 1 from each value to account for arrays starting at 0
-//        if (Objects.equals(Input.charAt(length - 1), charaSet[(charaSet.length-1)]))
-//        {
-//            System.out.println(Input.substring(0, length-1));
-//            out = Input.substring(0, length-1);
-//            // 
-//            last = 0;
-//            // call recursively rather than looping
-//            return getNextString(out,charaSet) + String.valueOf(charaSet[0]);            
-//        }
-//        // if character at the end of string is any other character in the character set 
-//        // e.g. in charaSet {a-z}    string aac 
-//        else
-//        {
-//            // remove last character from string then append next character in the character set 
-//            out = Input.substring(0, length-1) + String.valueOf(charaSet[last+1]);
-//            // increment value of last for use in the next recursion
-//            last = last + 1;
-//            textOutput.append(out + "\n");
-//            // return string with last character incremented
-//            return out;
-//        }
-//
-//    }
-    
     private String getNextString(String Input)
     {
         int length;
@@ -391,47 +348,25 @@ Brute Force Password
         // if character at end of string is the character at the end of the character set
         // e.g. in charaSet {a-z}    string aaz  z is end of charasSet
         // - 1 from each value to account for arrays starting at 0
-        if (Objects.equals(Input.charAt(length - 1), charaSet.get((charaSet.size() - 1))))
+        if (Objects.equals(String.valueOf(Input.charAt(length - 1)), charaSet.get((charaSet.size() - 1))))
         {
-            System.out.println(Input.substring(0, length-1));
             out = Input.substring(0, length-1);
-            
-            // call recursively rather than looping
+            // call recursively rather than looping 
             return getNextString(out) + String.valueOf(charaSet.get(0));            
         }
         // if character at the end of string is any other character in the character set 
         // e.g. in charaSet {a-z}    string aac 
         else
         {
+            // c = value of last character in Input casted to a string
             c = String.valueOf(Input.charAt(length-1));
             // remove last character from string then append next character in the character set 
             out = Input.substring(0, length-1) + String.valueOf(charaSet.get((keySet.get(c)) + 1));
-            // increment value of last for use in the next recursion
-            textOutput.append(out + "\n");
             // return string with last character incremented
             return out;
         }
 
     }
-    
-/*
-    
-    a-0
-    
-    a   a-0
-    b   a-0
-    ...
-    0   a-0
-    
-    a   a-0 a-0
-    b   a-0 a-0
-    ...
-    0   a-0 a-0
-    
-    
-    */
-    
-
 
 /****************************************************************
 * Function name   :
