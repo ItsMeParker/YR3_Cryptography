@@ -1,10 +1,8 @@
 
 import java.io.UnsupportedEncodingException;
-import static java.lang.reflect.Array.get;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
