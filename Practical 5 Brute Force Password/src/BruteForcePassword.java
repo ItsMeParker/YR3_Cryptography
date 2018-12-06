@@ -128,7 +128,7 @@ Brute Force Password
     
     private void initialiseMaps()
     {        
-        charaSet.put(0, "a");
+       /* charaSet.put(0, "a");
         charaSet.put(1, "b");
         charaSet.put(2, "c");
         charaSet.put(3, "d");
@@ -163,61 +163,7 @@ Brute Force Password
         charaSet.put(32,"6");
         charaSet.put(33,"7");
         charaSet.put(34,"8");
-        charaSet.put(35,"9");
-
-        /* Alternate character set order based on most common characters used in english language 
-        *  a to z listed in most common as per https://en.oxforddictionaries.com/explore/which-letters-are-used-most/ 
-        *  0 to 9 listed in most common as per https://www.scientificamerican.com/article/most-popular-numbers-grapes-of-math/ 
-        *  just wanted to see if this would speed up password breaking, I'm pretty sure it wouldnt work for random strings but  
-        *  would it change anything if the password contains english words?
-        *  Password    a to z      most common
-        *  this        1015
-        *  is          18
-        *  very        1165
-        *  simple      978140
-        *  fail7       8454
-        *  5you5       45066
-        *  3crack      1462480
-        *  1you1       38092
-
-
-        charaSet.put(0, "e");
-        charaSet.put(1, "a");
-        charaSet.put(2, "r");
-        charaSet.put(3, "i");
-        charaSet.put(4, "o");
-        charaSet.put(5, "t");
-        charaSet.put(6, "n");
-        charaSet.put(7, "s");
-        charaSet.put(8, "l");
-        charaSet.put(9, "c");
-        charaSet.put(10,"u");
-        charaSet.put(11,"d");
-        charaSet.put(12,"p");
-        charaSet.put(13,"m");
-        charaSet.put(14,"h");
-        charaSet.put(15,"g");
-        charaSet.put(16,"b");
-        charaSet.put(17,"f");
-        charaSet.put(18,"y");
-        charaSet.put(19,"w");
-        charaSet.put(20,"k");
-        charaSet.put(21,"v");
-        charaSet.put(22,"x");
-        charaSet.put(23,"z");
-        charaSet.put(24,"j");
-        charaSet.put(25,"q");
-        charaSet.put(26,"7");
-        charaSet.put(27,"3");
-        charaSet.put(28,"8");
-        charaSet.put(29,"4");
-        charaSet.put(30,"5");
-        charaSet.put(31,"9");
-        charaSet.put(32,"6");
-        charaSet.put(33,"2");
-        charaSet.put(34,"1");
-        charaSet.put(35,"0");
-        */
+        charaSet.put(35,"9"); 
 
         keySet.put("a",0 );
         keySet.put("b",1 );
@@ -254,7 +200,101 @@ Brute Force Password
         keySet.put("6",32);
         keySet.put("7",33);
         keySet.put("8",34);
-        keySet.put("9",35); 
+        keySet.put("9",35); */
+
+        /* Alternate character set order based on most common characters used in english language 
+        *  a to z listed in most common as per https://en.oxforddictionaries.com/explore/which-letters-are-used-most/ 
+        *  0 to 9 listed in most common as per https://www.scientificamerican.com/article/most-popular-numbers-grapes-of-math/ 
+        *  just wanted to see if this would speed up password breaking, I'm pretty sure it wouldnt work for random strings but  
+        *  would it change anything if the password contains english words?
+        *  Password    a to z   sec     most common
+        1  this        1015     1        455
+        2  is          18       1        17
+        3  very        1165     1        1121
+        4  simple      978140   978      412590
+        5  fail7       8454     8       24458
+        6  5you5       45066    45      42569
+        7  3crack      1462480  1462    1391144
+        8  1you1       38092    38      48173
+        9  00if00      1314119  1314    1799917
+        10 cannot      144186   144     494395
+        11 4this4      1657574  1657    1637589
+        12 6will       48527    48      45078
+        */
+        charaSet.put(0, "e");
+        charaSet.put(1, "a");
+        charaSet.put(2, "r");
+        charaSet.put(3, "i");
+        charaSet.put(4, "o");
+        charaSet.put(5, "t");
+        charaSet.put(6, "n");
+        charaSet.put(7, "s");
+        charaSet.put(8, "l");
+        charaSet.put(9, "c");
+        charaSet.put(10,"u");
+        charaSet.put(11,"d");
+        charaSet.put(12,"p");
+        charaSet.put(13,"m");
+        charaSet.put(14,"h");
+        charaSet.put(15,"g");
+        charaSet.put(16,"b");
+        charaSet.put(17,"f");
+        charaSet.put(18,"y");
+        charaSet.put(19,"w");
+        charaSet.put(20,"k");
+        charaSet.put(21,"v");
+        charaSet.put(22,"x");
+        charaSet.put(23,"z");
+        charaSet.put(24,"j");
+        charaSet.put(25,"q");
+        charaSet.put(26,"7");
+        charaSet.put(27,"3");
+        charaSet.put(28,"8");
+        charaSet.put(29,"4");
+        charaSet.put(30,"5");
+        charaSet.put(31,"9");
+        charaSet.put(32,"6");
+        charaSet.put(33,"2");
+        charaSet.put(34,"1");
+        charaSet.put(35,"0");
+        
+        keySet.put("e",0 );
+        keySet.put("a",1 );
+        keySet.put("r",2 );
+        keySet.put("i",3 );
+        keySet.put("o",4 );
+        keySet.put("t",5 );
+        keySet.put("n",6 );
+        keySet.put("s",7 );
+        keySet.put("l",8 );
+        keySet.put("c",9 );
+        keySet.put("u",10);
+        keySet.put("d",11);
+        keySet.put("p",12);
+        keySet.put("m",13);
+        keySet.put("h",14);
+        keySet.put("g",15);
+        keySet.put("b",16);
+        keySet.put("f",17);
+        keySet.put("y",18);
+        keySet.put("w",19);
+        keySet.put("k",20);
+        keySet.put("v",21);
+        keySet.put("x",22);
+        keySet.put("z",23);
+        keySet.put("j",24);
+        keySet.put("q",25);
+        keySet.put("7",26);
+        keySet.put("3",27);
+        keySet.put("8",28);
+        keySet.put("4",29);
+        keySet.put("5",30);
+        keySet.put("9",31);
+        keySet.put("6",32);
+        keySet.put("2",33);
+        keySet.put("1",34);
+        keySet.put("0",35);
+
         
     }
     
@@ -360,7 +400,7 @@ Brute Force Password
                 // generated password was not correct so generate next password to check
                 generatedPassword = getNextString(generatedPassword);
             }
-
+            
         }
         
         textOutput.append( passwordHash + " Broken \n\n Password = " + generatedPassword + "\n");
