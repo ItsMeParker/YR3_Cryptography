@@ -1,10 +1,8 @@
 
 import java.io.UnsupportedEncodingException;
-import static java.lang.reflect.Array.get;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -451,7 +449,7 @@ Brute Force Password
         // e.g. in charaSet {a-z}    string aac 
         else
         {
-            // c = value of character at end of string
+            // c = value of last character in Input casted to a string
             c = String.valueOf(Input.charAt(length-1));
             // remove last character from string then append next character in the character set 
             out = Input.substring(0, length-1) + String.valueOf(charaSet.get((keySet.get(c)) + 1));
@@ -461,7 +459,6 @@ Brute Force Password
 
     }
     
-
 /****************************************************************
 * Function name   :
 *    returns      :
