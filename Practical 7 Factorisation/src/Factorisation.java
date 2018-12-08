@@ -1,5 +1,8 @@
+import java.awt.List;
 import java.lang.Math;
 import java.math.BigInteger;
+import javafx.util.Pair;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -117,13 +120,11 @@ Factorisation
         switch (method)
         {
             case "Fermat":
-
-                textOutput.append(String.valueOf(input));
-                
-                
+            		fermat(input);
+                               
                 break;
             case "Dixon":
-
+            		dixon(input);
                 break;
 
         }
@@ -132,32 +133,40 @@ Factorisation
     }//GEN-LAST:event_factoriseMouseClicked
 
 /****************************************************************
+* Function name   : fermat
+*    returns      : void
+*    arg1         : BigInteger : input
+* Created by      : Connor Parker
+* Created on      : 05/12/2018
+* Description     : 
+* Notes           : 
+***************************************************************/
+   
+    private void fermat(BigInteger input)
+    {
+    	//
+        Pair<Integer, Integer> factors = fermatFactor(input);
+     
+     	// output the factors  
+        textOutput.append("Fermat factorisation of n = " + String.valueOf(input) + "\n");
+        textOutput.append("n = xy = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n\n");
+    }
+
+/****************************************************************
 * Function name   : fermatFactor
-*    returns      : BigInteger
+*    returns      : Pair 
 *    arg1         : BigInteger : input
 * Created by      : Connor Parker
 * Created on      : 04/12/2018
 * Description     : 
-* Notes           : 
+* Notes           : containing the factors
 ***************************************************************/
-/*    
-FermatFactor(N) 
-{  //  factoring N, return one of N’s factor
-    A = ceiling(sqrt(N)) (  		// use GetIntSqrt(N)+1
-    Bsq = A*A - N
-    while (Bsq isn't a square) // keep searching
-    {        
-        A = A + 1
-        Bsq = A*A - N 		// or Bsq=Bsq + 2*A + 1
-    }   
-    return A - sqrt(Bsq) 		// or A + sqrt(Bsq)
-} */
-    
-    private BigInteger fermatFactor(BigInteger N)
+   
+    private Pair fermatFactor(BigInteger N)
     {
         BigInteger A, Bsq;
         boolean square = false;
-        
+        Pair<Integer, Integer> factors = new Pair<>(0,0);
         
         // A = ceiling(sqrt(N)) // use GetIntSqrt(N)+1
         A = getIntSqrt(N).add(new BigInteger("1"));
@@ -165,15 +174,25 @@ FermatFactor(N)
         // Bsq = A*A - N
         Bsq =  A.multiply(A).subtract(N);
         
-        
+        square = isSquare(Bsq);
         
         // while Bsq is not square
         while (square == false)
         {
-            
+        	// A = A + 1
+            A = A.add(new BigInteger("1"));
+        	
+        	// Bsq = A*A - N
+        	Bsq =  A.multiply(A).subtract(N);
+
+        	// check if Bsq is now square
+        	square = isSquare(Bsq);
         }
         
-        return A;
+        // add                A - sqrt(Bsq)            and             A + sqrt(Bsq) to pair to be returned 
+        factors = new Pair<>((A.subtract(getIntSqrt(Bsq)).intValue()),(A.add(getIntSqrt(Bsq)).intValue()));
+        
+        return factors;
 
     }
     
@@ -189,9 +208,17 @@ FermatFactor(N)
 
     private boolean isSquare(BigInteger X)
     {
-        if (X.sqrt())
+    	// find square root of X to the precision of a double
+    	// high precision is not important since only need to determine if X is square
+    	double root = Math.sqrt(X.doubleValue());
+
+        // find remainder of root mod 1
+        double remainder = root % 1;
+
+        // the remainder of any square number will be 0
+        if (remainder == 0)
         {
-            return true
+            return true;
         }
         else
         {
@@ -199,6 +226,82 @@ FermatFactor(N)
         }       
         
     }
+
+/****************************************************************
+* Function name   : dixon
+*    returns      : void
+*    arg1         : BigInteger : input
+* Created by      : Connor Parker
+* Created on      : 05/12/2018
+* Description     : 
+* Notes           : 
+***************************************************************/
+   
+    private void dixon(BigInteger input)
+    {
+    	//
+        int[] base = {2,3,5,7}; //,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97};
+     
+
+
+     	// output the factors  
+        textOutput.append("Dixon factorisation of n = " + String.valueOf(input) + "\n");
+        //textOutput.append("n = xy = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n\n");
+    }
+/*
+
+    def isBsmooth(n, b):
+        factors = []
+        for i in b:
+            while n % i == 0:
+                n = int(n / i)
+                if not i in factors:
+                    factors.append(i)
+        if n == 1 and factors == b:
+            return True
+        return False
+*/
+/****************************************************************
+* Function name   : isBSmooth
+*    returns      : void
+*    arg1         : BigInteger  : input
+*    arg2         : int[] 		: base
+* Created by      : Connor Parker
+* Created on      : 05/12/2018
+* Description     : 
+* Notes           : 
+***************************************************************/
+   
+    private void isBSmooth(BigInteger input, int[] base)
+    {
+        //https://www.geeksforgeeks.org/p-smooth-numbers-p-friable-number/
+    	int[] factors = {};
+        boolean loop = true;
+        
+        int[][] powerset = {};
+
+        // loop through all integers from 2 to largest in base
+    	for (int i = 2; i < base[base.length]; i++)
+    	{
+            // prime factorise by i. eg while n % i == 0
+            while (loop == true)
+            {
+            	// n = n / i
+            	input = input.divide(BigInteger.valueOf(base[i]));
+
+    		// check if n MOD element in base == 0
+    		if(input.mod(BigInteger.valueOf(base[i])) == BigInteger.ZERO)
+    		    loop = true;
+    		else
+                    loop = false;
+            }
+            
+            
+    	}
+
+
+    }
+
   
 /******************Following code is taken from sqrt_BigIntegers.docx***********************/
 
