@@ -1,7 +1,12 @@
-import java.awt.List;
 import java.lang.Math;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.util.Pair;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 
 /*
@@ -239,67 +244,247 @@ Factorisation
    
     private void dixon(BigInteger input)
     {
-    	//
-        int[] base = {2,3,5,7}; //,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97};
-     
+    	// list of prime numbers
+        ArrayList<BigInteger> base = new ArrayList<BigInteger>(Arrays.asList(BigInteger.valueOf(2),BigInteger.valueOf(3),BigInteger.valueOf(5),BigInteger.valueOf(7))); //,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97};
+        
+        ArrayList<ArrayList<BigInteger>> allPowerSets = new ArrayList<>();
+
+        // random number into isBSmooth and add powerSet returned to allPowerSets
+        allPowerSets.add(isBSmooth(input,base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(1)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(2)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(3)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(4)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(5)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(6)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(7)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(8)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(9)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(10)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(11)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(12)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(13)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(14)),base));
+        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(15)),base));
+        
+        for (ArrayList<BigInteger> p : allPowerSets)
+        {
+            for (BigInteger q : p)
+            {            
+                textOutput.append(q.toString() + " , ");
+            }
+            textOutput.append("\n.");
+        }
+        
+        ArrayList<ArrayList<BigInteger>> pair_list = new ArrayList<>();
+        ArrayList<BigInteger> pow_list = new ArrayList<>();
+        Map<BigInteger,Boolean> usedBefore = new HashMap();
+        Boolean twoSquareFound = false;
+        Boolean validX = false;
+        BigInteger a = BigInteger.valueOf(0);
+        BigInteger x = BigInteger.valueOf(0);
+
+        // loop until two square numbers are found
+        while(twoSquareFound == false)
+        {
+
+            // generate random number x (sqrt(N) < x < N)
+            while (validX == false)
+            {
+                // "Constructs a randomly generated BigInteger, uniformly distributed over the range 0 to (2numBits - 1), inclusive."
+                x = new BigInteger(input.bitLength(), new Random());
+                
+                // exit loop if x is in range (sqrt(N) < x < N)
+                // compareTo "returns -1, 0, or 1 as this BigDecimal is numerically less than, equal to, or greater than val."
+                if ((x.compareTo(getIntSqrt(input)) == 1) && (x.compareTo(input) == -1))
+                {
+                    validX = true;
+                }                    
+            }
+                        
+            // if number has been used before
+            if (usedBefore.containsKey(x))
+            {   
+                // do nothing
+            }
+            else
+            {
+                // a = x2 mod N;
+                a = x.multiply(BigInteger.valueOf(2)).mod(input);
+                
+                // will be empty if not 
+                pow_list = isBSmooth(a, base);
+                // if a is not 7-smooth
+                if (pow_list.isEmpty())
+                {
+                    // do nothing
+                }
+                else
+                {
+                    if (isEvenPowList(pow_list) == true)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        pair_list.add(pow_list);
+                    }
+                }
+
+
+
+            }
+
+            // put x into map to avoid repeat on next loop
+            usedBefore.put(x, true);
+            // reinitialise bool for next loop
+            validX = false;
+            
+            // check if 2 square numbers found
+            
+        }
+        
+        
 
 
      	// output the factors  
-        textOutput.append("Dixon factorisation of n = " + String.valueOf(input) + "\n");
+        textOutput.append("\nDixon factorisation of n = " + String.valueOf(input) + "\n");
         //textOutput.append("n = xy = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n\n");
     }
-/*
 
-    def isBsmooth(n, b):
-        factors = []
-        for i in b:
-            while n % i == 0:
-                n = int(n / i)
-                if not i in factors:
-                    factors.append(i)
-        if n == 1 and factors == b:
-            return True
-        return False
-*/
 /****************************************************************
-* Function name   : isBSmooth
-*    returns      : void
-*    arg1         : BigInteger  : input
-*    arg2         : int[] 		: base
+* Function name   : isEvenPowList
+*    returns      : boolean
+*    arg1         : ArrayList<BigInteger> : pow_list
 * Created by      : Connor Parker
-* Created on      : 05/12/2018
-* Description     : 
+* Created on      : 09/12/2018
+* Description     : function to check if all powers in a powerSet are even
 * Notes           : 
 ***************************************************************/
-   
-    private void isBSmooth(BigInteger input, int[] base)
+
+    private boolean isEvenPowList(ArrayList<BigInteger> pow_list)
     {
-        //https://www.geeksforgeeks.org/p-smooth-numbers-p-friable-number/
-    	int[] factors = {};
-        boolean loop = true;
-        
-        int[][] powerset = {};
-
-        // loop through all integers from 2 to largest in base
-    	for (int i = 2; i < base[base.length]; i++)
-    	{
-            // prime factorise by i. eg while n % i == 0
-            while (loop == true)
+        boolean allEven = true;
+        // remove first element of pow_list which is N, not a power
+        pow_list.remove(0);
+        // loop through powers in pow_list
+        for (BigInteger element : pow_list)
+        {            
+            // if power is odd
+            // eg if element MOD 2 == 1
+            if (element.mod(BigInteger.valueOf(2)).compareTo(1) == 0)
             {
-            	// n = n / i
-            	input = input.divide(BigInteger.valueOf(base[i]));
+                allEven = false;
+            }
+        }
 
-    		// check if n MOD element in base == 0
-    		if(input.mod(BigInteger.valueOf(base[i])) == BigInteger.ZERO)
-    		    loop = true;
-    		else
-                    loop = false;
+        return allEven;
+    }
+
+
+/****************************************************************
+* Function name   : isBSmooth
+*    returns      : ArrayList<BigInteger>
+*    arg1         : BigInteger              : input
+*    arg2         : ArrayList<BigInteger>   : base
+* Created by      : Connor Parker
+* Created on      : 05/12/2018
+* Description     : a function to check if a given number, input, is base-smooth, if yes, return its power set
+* Notes           : B-smooth AKA friable
+***************************************************************/
+   
+    private ArrayList<BigInteger> isBSmooth(BigInteger input, ArrayList<BigInteger> base)
+    {
+        // initialise empty list of BigInteger for the power set
+        ArrayList<BigInteger> powerSet = new ArrayList<>();
+        boolean loop = true;       
+        BigInteger factorPower = BigInteger.valueOf(0);
+        BigInteger tempN = input;
+        int max = -1;
+
+        // maintain value of input for use in finding powerSet after determining whether input is friable
+        tempN = input;
+
+/******************Following code is heavily based on https://www.geeksforgeeks.org/p-smooth-numbers-p-friable-number/***********************/
+ 
+        // prime factorise by 2 
+        // eg while (n % 2) == 0
+        while (tempN.mod(BigInteger.valueOf(2)).compareTo(BigInteger.ZERO) == 0)
+        {
+            max = Math.max(max, 2); 
+            tempN = tempN.divide(BigInteger.valueOf(2));
+        }
+
+        // loop through all possible factors
+        // while i <= sqrt of input
+        for (int i = 3; ((getIntSqrt(input).compareTo(BigInteger.valueOf(i)) == 1) || (getIntSqrt(input).compareTo(BigInteger.valueOf(i)) == 0)) ; i += 2)
+        {
+            // prime factorise by i eg (n % i) == 0
+            while (tempN.mod(BigInteger.valueOf(i)).compareTo(BigInteger.ZERO) == 0)
+            {
+                max = Math.max(max, i); 
+                tempN = tempN.divide(BigInteger.valueOf(i));
             }
             
-            
-    	}
+        }
+
+        // eg if tempN > 2
+        if (tempN.compareTo(BigInteger.valueOf(2)) == 1)
+        {
+            // convert tempN to int since it should be a small prime and not out of bounds
+            max = Math.max(max,tempN.intValue());
+        }
+
+/**********************End of Code heavily based on https://www.geeksforgeeks.org/p-smooth-numbers-p-friable-number/******************************/
 
 
+        // if max is less or equal to last element in base then it is b smooth and need to find power set
+        // eg input is b smooth
+        // eg max < last element in base  OR  max = last element in base
+        if ((base.get(base.size()-1).compareTo(BigInteger.valueOf(max)) == 1) || ((base.get(base.size()-1).compareTo(BigInteger.valueOf(max)) == 0)))
+        {
+            tempN = input;        
+            // store input in first position of powerSet
+            powerSet.add(input);
+            // loop through all elements in base
+            for (BigInteger baseElement: base)
+            {
+                // make tempN equal to n
+                tempN = input;
+                // reset factorPower ready for calculation of factorPower of next element in base
+                factorPower = BigInteger.valueOf(0);
+    
+                // check if n MOD element in base == 0
+                if(input.mod(baseElement) == BigInteger.ZERO)
+                    loop = true;
+                else
+                {
+                    // do not enter while
+                    loop = false;
+                }
+    
+                // prime factorise by i. eg while n MOD base[i] == 0
+                while (loop == true)
+                {
+                    // n = n / i
+                    tempN = tempN.divide(baseElement);
+                    // increment factor power by one
+                    factorPower = factorPower.add(BigInteger.valueOf(1));
+    
+                    // check if n MOD element in base == 0
+                    if(tempN.mod(baseElement) == BigInteger.ZERO)
+                        loop = true;
+                    else
+                        loop = false;
+                }
+                // element i in base is a factor to the power of factorPower (i^factorPower) so store value in powerSet
+                // will be 0 if loop wasn't entered
+                powerSet.add(factorPower);
+            }
+        }
+
+        // will return empty powerSet if input is not friable and powerSet otherwise
+        return powerSet;
     }
 
   
