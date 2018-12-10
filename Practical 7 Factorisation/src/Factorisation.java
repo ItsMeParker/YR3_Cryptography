@@ -327,15 +327,17 @@ Factorisation
                     }
                     else
                     {
-                        pair_list.add(pow_list);
-                    }
+                        pair_list = addToPairList(pow_list,pair_list);
+                        // if the length of last list in pair_list == 5 then it is even
+                        if (pair_list.get(pair_list.length()).lenth() == 5)
+                        {
+                            break;
+                        }                      
+                    }   
                 }
-
-
-
             }
 
-            // put x into map to avoid repeat on next loop
+            // put x into map to avoid repeat on next loops
             usedBefore.put(x, true);
             // reinitialise bool for next loop
             validX = false;
@@ -372,7 +374,7 @@ Factorisation
         {            
             // if power is odd
             // eg if element MOD 2 == 1
-            if (element.mod(BigInteger.valueOf(2)).compareTo(1) == 0)
+            if (element.mod(BigInteger.valueOf(2)).compareTo(BigInteger.valueOf(1)) == 0)
             {
                 allEven = false;
             }
@@ -381,6 +383,66 @@ Factorisation
         return allEven;
     }
 
+/****************************************************************
+* Function name   : addToPairList
+*    returns      : ArrayList<ArrayList<BigInteger>>
+*    arg1         : ArrayList<BigInteger> : pow_list
+*    arg2         : ArrayList<BigInteger> : pair_list
+* Created by      : Connor Parker
+* Created on      : 09/12/2018
+* Description     : function to check if a power set will combine 
+                    with any existing elements and if not add it 
+                    to the end
+* Notes           : this is a case where I would like to pass the 
+                    pair_list by reference and return an even power 
+                    set but that isn't a part of java for reasons 
+                    I've not fully explored
+***************************************************************/
+
+    private ArrayList<ArrayList<BigInteger>> addToPairList(ArrayList<BigInteger> pow_list, ArrayList<ArrayList<BigInteger>> pair_list)
+    {
+        ArrayList<BigInteger> tempPowerSet = new ArrayList<>();
+        boolean evenFound = false;
+
+        // loop through all powerSets in pair_list
+        for (int i = 0; i < pair_list.size(); i++)  
+        {
+            // for all positions in a powerset
+            for (int j = 0; j < 5; j++)
+            {
+                if (j == 0)
+                {                   
+                    // times values in first postion of pow_list and element of pair_list
+                    tempPowerSet.set(j, (pair_list.get(i).get(j).multiply(pow_list.get(j))));
+                }
+                else
+                {
+                    // add positions in pair_list and pow_list and store in tempPowerSet
+                    tempPowerSet.set(j, (pair_list.get(i).get(j).add(pow_list.get(j))));
+                }
+
+            }
+            
+            if (isEvenPowList(tempPowerSet) == true)
+            {
+                pair_list.remove(i);
+                evenFound = true;
+            }
+        }
+        
+        if (evenFound == false)
+        {
+            pair_list.add(pow_list);
+        }
+        else if (evenFound == true)
+        {
+            tempPowerSet.add(BigInteger.valueOf(-1));
+            pair_list.add(tempPowerSet);
+        }
+        
+        return pair_list;
+
+    }   
 
 /****************************************************************
 * Function name   : isBSmooth
