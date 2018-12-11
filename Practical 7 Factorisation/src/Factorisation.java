@@ -285,6 +285,7 @@ Factorisation
         BigInteger x = BigInteger.valueOf(0);
         // initialised to 1 so that y.multiply doesnt multiply by zero
         BigInteger y = BigInteger.valueOf(1);
+        Pair<BigInteger, BigInteger> factors = new Pair<>(BigInteger.ZERO,BigInteger.ZERO);
 
         // loop until two square numbers are found
         while(twoSquareFound == false)
@@ -372,9 +373,12 @@ Factorisation
 
         }
 
+        //                    gcd(N, x+y)             gcd(N, abs(x-y))
+        factors = new Pair<>((input.gcd((x.add(y)))),(input.gcd(x.subtract(y).abs())));
+
      	// output the factors  
         textOutput.append("\nDixon factorisation of n = " + String.valueOf(input) + "\n");
-        textOutput.append("n = xy = " + String.valueOf(x) + " * " + String.valueOf(y) + "\n\n");
+        textOutput.append("n = xy = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n\n");
     }
 
 /****************************************************************
@@ -436,13 +440,13 @@ Factorisation
             {
                 if (j == 0)
                 {                   
-                    // times values in first postion of pow_list and element of pair_list
-                    tempPowerSet.set(j+1, (pair_list.get(i).get(j).multiply(pow_list.get(j))));
+                    // times values in first postion of pow_list and first p of pair_list
+                    tempPowerSet.add(pair_list.get(i).get(j).multiply(pow_list.get(j)));
                 }
                 else
                 {
-                    // add positions in pair_list and pow_list and store in tempPowerSet
-                    tempPowerSet.set(j, (pair_list.get(i).get(j).add(pow_list.get(j))));
+                    // add together positions in pair_list and pow_list and store in tempPowerSet
+                    tempPowerSet.add(pair_list.get(i).get(j).add(pow_list.get(j)));
                 }
 
             }
@@ -542,7 +546,7 @@ Factorisation
                 factorPower = BigInteger.ZERO;
     
                 // check if n MOD element in base == 0
-                if(input.mod(baseElement) == BigInteger.ZERO)
+                if(tempN.mod(baseElement) == BigInteger.ZERO)
                     loop = true;
                 else
                 {
