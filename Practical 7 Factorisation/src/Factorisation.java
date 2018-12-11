@@ -246,8 +246,8 @@ Factorisation
     {
     	// list of prime numbers
         ArrayList<BigInteger> base = new ArrayList<BigInteger>(Arrays.asList(BigInteger.valueOf(2),BigInteger.valueOf(3),BigInteger.valueOf(5),BigInteger.valueOf(7))); //,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97};
-        
-        ArrayList<ArrayList<BigInteger>> allPowerSets = new ArrayList<>();
+
+        /*ArrayList<ArrayList<BigInteger>> allPowerSets = new ArrayList<>();
 
         // random number into isBSmooth and add powerSet returned to allPowerSets
         allPowerSets.add(isBSmooth(input,base));
@@ -274,7 +274,7 @@ Factorisation
                 textOutput.append(q.toString() + " , ");
             }
             textOutput.append("\n.");
-        }
+        } */
         
         ArrayList<ArrayList<BigInteger>> pair_list = new ArrayList<>();
         ArrayList<BigInteger> pow_list = new ArrayList<>();
@@ -283,6 +283,8 @@ Factorisation
         Boolean validX = false;
         BigInteger a = BigInteger.valueOf(0);
         BigInteger x = BigInteger.valueOf(0);
+        // initialised to 1 so that y.multiply doesnt multiply by zero
+        BigInteger y = BigInteger.valueOf(1);
 
         // loop until two square numbers are found
         while(twoSquareFound == false)
@@ -312,9 +314,9 @@ Factorisation
                 // a = x2 mod N;
                 a = x.multiply(BigInteger.valueOf(2)).mod(input);
                 
-                // will be empty if not 
+                // check if a is b smooth, return powerSet if it is {} if not 
                 pow_list = isBSmooth(a, base);
-                // if a is not 7-smooth
+                // if a is not b-smooth
                 if (pow_list.isEmpty())
                 {
                     // do nothing
@@ -327,12 +329,19 @@ Factorisation
                     }
                     else
                     {
-                        pair_list = addToPairList(pow_list,pair_list);
-                        // if the length of last list in pair_list == 5 then it is even
-                        if (pair_list.get(pair_list.length()).lenth() == 5)
+                        //add pow_list to pair_list
+                        //when adding it we try to combine pow_list with 
+                        //all existing one in pair_list,                        
+                        pair_list = addToPairList(pow_list,pair_list);                                        // 0 1 2 3
+                        // if the length of last list in pair_list == size of base + 1                  eg base {2,3,5,7}      size = 4 + 1 for
+                        // (note the +1 to account for starting at zero and having x at position zero)  powerSet{x,a,b,c,d}    size = 4
+                        // then -1 was added by addToPairList and it is twoSquare/even              eve powerSet{x,a,b,c,d,0}  size = 5
+                        if (pair_list.get(pair_list.size()-1).size() == (base.size() + 1))
                         {
+                            twoSquareFound = true;
                             break;
-                        }                      
+                        }
+                        // else pow_list was added to end of pair_list                      
                     }   
                 }
             }
@@ -340,18 +349,32 @@ Factorisation
             // put x into map to avoid repeat on next loops
             usedBefore.put(x, true);
             // reinitialise bool for next loop
-            validX = false;
-            
-            // check if 2 square numbers found
-            
+            validX = false;          
         }
-        
-        
 
+        // Use the even pow_list to work out the square number y
+        // for all positions in a powerset of lenght base.size()
+        // (note no -1 or +1 to base.size() since first element is value of x
+        // and we don't want to use the 0 on the end added by addToPairList)
+        for (int i = 0; i < base.size(); i++)
+        {
+            if (i == 0)
+            {       
+                // make x = first element in last list in pair_list             
+                x = pair_list.get(pair_list.size()-1).get(i);
+
+            }
+            else
+            {
+                // y = (elementOfBase^(0.5*power)) * (nextElementOfBase^(0.5*power)) * . . . * (lastElementOfBase^(0.5*power))
+                y = y.multiply(base.get(i).pow(((int)0.5 * pair_list.get(pair_list.size()-1).get(i).intValue())));    
+            }
+
+        }
 
      	// output the factors  
         textOutput.append("\nDixon factorisation of n = " + String.valueOf(input) + "\n");
-        //textOutput.append("n = xy = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n\n");
+        textOutput.append("n = xy = " + String.valueOf(x) + " * " + String.valueOf(y) + "\n\n");
     }
 
 /****************************************************************
@@ -395,7 +418,8 @@ Factorisation
                     to the end
 * Notes           : this is a case where I would like to pass the 
                     pair_list by reference and return an even power 
-                    set but that isn't a part of java for reasons 
+                    set, or perhaps return a boolean for even powerSet
+                    found but that isn't a part of java for reasons 
                     I've not fully explored
 ***************************************************************/
 
@@ -405,15 +429,15 @@ Factorisation
         boolean evenFound = false;
 
         // loop through all powerSets in pair_list
-        for (int i = 0; i < pair_list.size(); i++)  
+        for (int i = 0; i < (pair_list.size()-1); i++)  
         {
-            // for all positions in a powerset
-            for (int j = 0; j < 5; j++)
+            // for all positions in pow_list powerSet
+            for (int j = 0; j < (pow_list.size() - 1); j++)
             {
                 if (j == 0)
                 {                   
                     // times values in first postion of pow_list and element of pair_list
-                    tempPowerSet.set(j, (pair_list.get(i).get(j).multiply(pow_list.get(j))));
+                    tempPowerSet.set(j+1, (pair_list.get(i).get(j).multiply(pow_list.get(j))));
                 }
                 else
                 {
@@ -436,7 +460,8 @@ Factorisation
         }
         else if (evenFound == true)
         {
-            tempPowerSet.add(BigInteger.valueOf(-1));
+            // add extra value to temp power set so it can be identified as even
+            tempPowerSet.add(BigInteger.ZERO);
             pair_list.add(tempPowerSet);
         }
         
@@ -514,7 +539,7 @@ Factorisation
                 // make tempN equal to n
                 tempN = input;
                 // reset factorPower ready for calculation of factorPower of next element in base
-                factorPower = BigInteger.valueOf(0);
+                factorPower = BigInteger.ZERO;
     
                 // check if n MOD element in base == 0
                 if(input.mod(baseElement) == BigInteger.ZERO)
