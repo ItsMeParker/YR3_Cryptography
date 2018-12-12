@@ -53,7 +53,7 @@ public class Factorisation extends javax.swing.JFrame {
         jTextField3.setEditable(false);
         jTextField3.setText("Select Method");
 
-        factorisationMethod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Fermat", "Dixon" }));
+        factorisationMethod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Fermat", "Dixon", "Test All" }));
 
         textOutput.setColumns(20);
         textOutput.setRows(5);
@@ -121,6 +121,8 @@ Factorisation
         Object selected = factorisationMethod.getSelectedItem();
         String method = selected.toString();
         
+
+        
         // call different method depending on option chosen
         switch (method)
         {
@@ -131,7 +133,9 @@ Factorisation
             case "Dixon":
             		dixon(input);
                 break;
-
+            case "Test All":
+                    testAll();
+                break;
         }
         
         
@@ -153,8 +157,7 @@ Factorisation
         Pair<Integer, Integer> factors = fermatFactor(input);
      
      	// output the factors  
-        textOutput.append("Fermat factorisation of n = " + String.valueOf(input) + "\n");
-        textOutput.append("n = xy = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n\n");
+        textOutput.append("Fermat factorisation of n = " + String.valueOf(input) + "= x*y = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n");
     }
 
 /****************************************************************
@@ -244,38 +247,29 @@ Factorisation
    
     private void dixon(BigInteger input)
     {
-    	// list of prime numbers
-        ArrayList<BigInteger> base = new ArrayList<BigInteger>(Arrays.asList(BigInteger.valueOf(2),BigInteger.valueOf(3),BigInteger.valueOf(5),BigInteger.valueOf(7))); //,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97};
+        // list of prime numbers pulled from https://primes.utm.edu/lists/small/1000.txt
+        ArrayList<BigInteger> base = new ArrayList<BigInteger>(Arrays.asList(new BigInteger("2"  ),new BigInteger("3"  ),new BigInteger("5"  ),new BigInteger("7"  ),new BigInteger("1"  ),new BigInteger("3"  ),new BigInteger("7"  ),new BigInteger("9"  ),new BigInteger("3"  ),new BigInteger("9"  ),
+                                                                             new BigInteger("31" ),new BigInteger("37" ),new BigInteger("41" ),new BigInteger("43" ),new BigInteger("47" ),new BigInteger("53" ),new BigInteger("59" ),new BigInteger("61" ),new BigInteger("67" ),new BigInteger("71" ),
+                                                                             new BigInteger("73" ),new BigInteger("79" ),new BigInteger("83" ),new BigInteger("89" ),new BigInteger("97" ),new BigInteger("01" ),new BigInteger("03" ),new BigInteger("07" ),new BigInteger("09" ),new BigInteger("13" ),
+                                                                             new BigInteger("127"),new BigInteger("131"),new BigInteger("137"),new BigInteger("139"),new BigInteger("149"),new BigInteger("151"),new BigInteger("157"),new BigInteger("163"),new BigInteger("167"),new BigInteger("173"),
+                                                                             new BigInteger("179"),new BigInteger("181"),new BigInteger("191"),new BigInteger("193"),new BigInteger("197"),new BigInteger("199"),new BigInteger("211"),new BigInteger("223"),new BigInteger("227"),new BigInteger("229"),
+                                                                             new BigInteger("233"),new BigInteger("239"),new BigInteger("241"),new BigInteger("251"),new BigInteger("257"),new BigInteger("263"),new BigInteger("269"),new BigInteger("271"),new BigInteger("277"),new BigInteger("281") )); 
 
-        /*ArrayList<ArrayList<BigInteger>> allPowerSets = new ArrayList<>();
-
-        // random number into isBSmooth and add powerSet returned to allPowerSets
-        allPowerSets.add(isBSmooth(input,base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(1)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(2)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(3)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(4)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(5)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(6)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(7)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(8)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(9)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(10)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(11)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(12)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(13)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(14)),base));
-        allPowerSets.add(isBSmooth(input.add(BigInteger.valueOf(15)),base));
-        
-        for (ArrayList<BigInteger> p : allPowerSets)
+        // Wikipedia suggests "the ideal factor base size is some power of exp(sqrt(log(N) * log(log(N))))"
+        // an answer to this question https://stackoverflow.com/questions/29366047/can-someone-explain-to-me-this-part-of-dixons-factorization-algorithm 
+        // gives ^(1/2) as power therefore do exp(sqrt(log(N) * log(log(N))))^(0.5)
+        double optimal = Math.pow(Math.exp(Math.sqrt(Math.log(input.doubleValue()) * Math.log(Math.log(input.doubleValue())))), 0.5);
+        // loop through all elements in the current base
+        for (int i = 0; i < base.size(); i++)
         {
-            for (BigInteger q : p)
-            {            
-                textOutput.append(q.toString() + " , ");
-            }
-            textOutput.append("\n.");
-        } */
-        
+            // if element of base at i is larger than optimal then remove the value from the base
+            if (base.get(i).compareTo(BigInteger.valueOf((long)optimal)) == 1)
+            {
+                // remove elements of base from i to end of base
+                base.subList(i, base.size()).clear();
+            }            
+        }
+
         ArrayList<ArrayList<BigInteger>> pair_list = new ArrayList<>();
         ArrayList<BigInteger> pow_list = new ArrayList<>();
         Map<BigInteger,Boolean> usedBefore = new HashMap();
@@ -286,7 +280,7 @@ Factorisation
         // initialised to 1 so that y.multiply doesnt multiply by zero
         BigInteger y = BigInteger.valueOf(1);
         Pair<BigInteger, BigInteger> factors = new Pair<>(BigInteger.ZERO,BigInteger.ZERO);
-
+        
         // loop until two square numbers are found
         while(twoSquareFound == false)
         {
@@ -296,7 +290,7 @@ Factorisation
             {
                 // "Constructs a randomly generated BigInteger, uniformly distributed over the range 0 to (2numBits - 1), inclusive."
                 x = new BigInteger(input.bitLength(), new Random());
-                
+
                 // exit loop if x is in range (sqrt(N) < x < N)
                 // compareTo "returns -1, 0, or 1 as this BigDecimal is numerically less than, equal to, or greater than val."
                 if ((x.compareTo(getIntSqrt(input)) == 1) && (x.compareTo(input) == -1))
@@ -312,11 +306,11 @@ Factorisation
             }
             else
             {
-                // a = x2 mod N;
-                a = x.multiply(BigInteger.valueOf(2)).mod(input);
+                // a = x^2 mod N;
+                a = x.multiply(x).mod(input);
                 
                 // check if a is b smooth, return powerSet if it is {} if not 
-                pow_list = isBSmooth(a, base);
+                pow_list = isBSmooth(x,a, base);
                 // if a is not b-smooth
                 if (pow_list.isEmpty())
                 {
@@ -326,6 +320,9 @@ Factorisation
                 {
                     if (isEvenPowList(pow_list) == true)
                     {
+                        // add pow_list to pair_list to be used in calculating factors, 
+                        // since it wont be added by addToPairList if the first powerList calculated is even
+                        pair_list.add(pow_list);
                         break;
                     }
                     else
@@ -334,10 +331,10 @@ Factorisation
                         //when adding it we try to combine pow_list with 
                         //all existing one in pair_list,                        
                         pair_list = addToPairList(pow_list,pair_list);                                        // 0 1 2 3
-                        // if the length of last list in pair_list == size of base + 1                  eg base {2,3,5,7}      size = 4 + 1 for
-                        // (note the +1 to account for starting at zero and having x at position zero)  powerSet{x,a,b,c,d}    size = 4
-                        // then -1 was added by addToPairList and it is twoSquare/even              eve powerSet{x,a,b,c,d,0}  size = 5
-                        if (pair_list.get(pair_list.size()-1).size() == (base.size() + 1))
+                        // if the length of last list in pair_list == size of base + 2                           eg base {2,3,5,7}      size = 4 + 2 = 6
+                        // then 0 was added by addToPairList and it is twoSquare/even                            powerSet{x,a,b,c,d}    size = 5
+                        // (note the +2 to account for starting at zero and having x at position zero)      even powerSet{x,a,b,c,d,-1} size = 6
+                        if (pair_list.get(pair_list.size()-1).size() == (base.size() + 2))
                         {
                             twoSquareFound = true;
                             break;
@@ -354,10 +351,10 @@ Factorisation
         }
 
         // Use the even pow_list to work out the square number y
-        // for all positions in a powerset of lenght base.size()
-        // (note no -1 or +1 to base.size() since first element is value of x
-        // and we don't want to use the 0 on the end added by addToPairList)
-        for (int i = 0; i < base.size(); i++)
+        // for all positions in a powerset of length base.size() + 1
+        // (note the +1 to base.size() since first element is the value of x
+        //  but we don't want to use the -1 added on the end by addToPairList)
+        for (int i = 0; i < (base.size() +1); i++)
         {
             if (i == 0)
             {       
@@ -368,7 +365,7 @@ Factorisation
             else
             {
                 // y = (elementOfBase^(0.5*power)) * (nextElementOfBase^(0.5*power)) * . . . * (lastElementOfBase^(0.5*power))
-                y = y.multiply(base.get(i).pow(((int)0.5 * pair_list.get(pair_list.size()-1).get(i).intValue())));    
+                y = y.multiply(base.get(i-1).pow(((int)(0.5 * pair_list.get(pair_list.size()-1).get(i).intValue()))));    
             }
 
         }
@@ -377,8 +374,7 @@ Factorisation
         factors = new Pair<>((input.gcd((x.add(y)))),(input.gcd(x.subtract(y).abs())));
 
      	// output the factors  
-        textOutput.append("\nDixon factorisation of n = " + String.valueOf(input) + "\n");
-        textOutput.append("n = xy = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n\n");
+        textOutput.append("Dixon factorisation of n = " + String.valueOf(input) + "= x*y = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n\n");
     }
 
 /****************************************************************
@@ -394,18 +390,26 @@ Factorisation
     private boolean isEvenPowList(ArrayList<BigInteger> pow_list)
     {
         boolean allEven = true;
-        // remove first element of pow_list which is N, not a power
-        pow_list.remove(0);
+
         // loop through powers in pow_list
-        for (BigInteger element : pow_list)
-        {            
-            // if power is odd
-            // eg if element MOD 2 == 1
-            if (element.mod(BigInteger.valueOf(2)).compareTo(BigInteger.valueOf(1)) == 0)
+        for ( int i = 0; i < (pow_list.size() - 1); i ++)
+        {       
+            if (i == 0)
             {
-                allEven = false;
+               // do nothing
+            }
+            else
+            {
+                // if power is odd
+                // eg if power at i MOD 2 == 1
+                if (pow_list.get(i).mod(BigInteger.valueOf(2)).compareTo(BigInteger.valueOf(1)) == 0)
+                {
+                    allEven = false;
+                    break;
+                }
             }
         }
+            
 
         return allEven;
     }
@@ -433,10 +437,10 @@ Factorisation
         boolean evenFound = false;
 
         // loop through all powerSets in pair_list
-        for (int i = 0; i < (pair_list.size()-1); i++)  
+        for (int i = 0; i < pair_list.size(); i++)  
         {
             // for all positions in pow_list powerSet
-            for (int j = 0; j < (pow_list.size() - 1); j++)
+            for (int j = 0; j < pow_list.size(); j++)
             {
                 if (j == 0)
                 {                   
@@ -453,6 +457,7 @@ Factorisation
             
             if (isEvenPowList(tempPowerSet) == true)
             {
+                // remove powerSet in pair_list that combined with pow_list to make an even power set
                 pair_list.remove(i);
                 evenFound = true;
             }
@@ -465,7 +470,7 @@ Factorisation
         else if (evenFound == true)
         {
             // add extra value to temp power set so it can be identified as even
-            tempPowerSet.add(BigInteger.ZERO);
+            tempPowerSet.add(BigInteger.valueOf(-1));
             pair_list.add(tempPowerSet);
         }
         
@@ -476,25 +481,26 @@ Factorisation
 /****************************************************************
 * Function name   : isBSmooth
 *    returns      : ArrayList<BigInteger>
-*    arg1         : BigInteger              : input
-*    arg2         : ArrayList<BigInteger>   : base
+*    arg1         : BigInteger              : x
+*    arg2         : BigInteger              : a
+*    arg3         : ArrayList<BigInteger>   : base
 * Created by      : Connor Parker
 * Created on      : 05/12/2018
-* Description     : a function to check if a given number, input, is base-smooth, if yes, return its power set
+* Description     : a function to check if a given number, a, is base-smooth, if yes, return its power set
 * Notes           : B-smooth AKA friable
 ***************************************************************/
    
-    private ArrayList<BigInteger> isBSmooth(BigInteger input, ArrayList<BigInteger> base)
+    private ArrayList<BigInteger> isBSmooth(BigInteger x, BigInteger a, ArrayList<BigInteger> base)
     {
         // initialise empty list of BigInteger for the power set
         ArrayList<BigInteger> powerSet = new ArrayList<>();
         boolean loop = true;       
         BigInteger factorPower = BigInteger.valueOf(0);
-        BigInteger tempN = input;
+        BigInteger tempN = a;
         int max = -1;
 
-        // maintain value of input for use in finding powerSet after determining whether input is friable
-        tempN = input;
+        // maintain value of a for use in finding powerSet after determining whether a is friable
+        tempN = a; 
 
 /******************Following code is heavily based on https://www.geeksforgeeks.org/p-smooth-numbers-p-friable-number/***********************/
  
@@ -507,8 +513,8 @@ Factorisation
         }
 
         // loop through all possible factors
-        // while i <= sqrt of input
-        for (int i = 3; ((getIntSqrt(input).compareTo(BigInteger.valueOf(i)) == 1) || (getIntSqrt(input).compareTo(BigInteger.valueOf(i)) == 0)) ; i += 2)
+        // while i <= sqrt of a
+        for (int i = 3; ((getIntSqrt(a).compareTo(BigInteger.valueOf(i)) == 1) || (getIntSqrt(a).compareTo(BigInteger.valueOf(i)) == 0)) ; i += 2)
         {
             // prime factorise by i eg (n % i) == 0
             while (tempN.mod(BigInteger.valueOf(i)).compareTo(BigInteger.ZERO) == 0)
@@ -530,18 +536,18 @@ Factorisation
 
 
         // if max is less or equal to last element in base then it is b smooth and need to find power set
-        // eg input is b smooth
+        // eg a is b smooth
         // eg max < last element in base  OR  max = last element in base
         if ((base.get(base.size()-1).compareTo(BigInteger.valueOf(max)) == 1) || ((base.get(base.size()-1).compareTo(BigInteger.valueOf(max)) == 0)))
         {
-            tempN = input;        
-            // store input in first position of powerSet
-            powerSet.add(input);
+            tempN = a;  
+            // set first position of powerSet to value of x for later use
+            powerSet.add(x);
             // loop through all elements in base
             for (BigInteger baseElement: base)
             {
                 // make tempN equal to n
-                tempN = input;
+                tempN = a;
                 // reset factorPower ready for calculation of factorPower of next element in base
                 factorPower = BigInteger.ZERO;
     
@@ -574,9 +580,52 @@ Factorisation
             }
         }
 
-        // will return empty powerSet if input is not friable and powerSet otherwise
+        // will return empty powerSet if a is not friable and powerSet otherwise
         return powerSet;
     }
+
+/****************************************************************
+* Function name   : testAll
+*    returns      : void
+*    arg1         : 
+* Created by      : Connor Parker
+* Created on      : 10/12/2018
+* Description     : funtion to test a given set of data with the fermat and dixon functions 
+* Notes           : 
+***************************************************************/
+   
+    private void testAll()
+    {
+        ArrayList<BigInteger> testSet = new ArrayList<>();
+
+        testSet.add(new BigInteger("224573"));
+        testSet.add(new BigInteger("299203"));
+        testSet.add(new BigInteger("1963867"));
+        testSet.add(new BigInteger("6207251"));
+        testSet.add(new BigInteger("14674291"));
+        testSet.add(new BigInteger("23128513"));
+        testSet.add(new BigInteger("254855791"));
+        /*testSet.add(new BigInteger("428279361"));
+        testSet.add(new BigInteger("159649552547"));
+        testSet.add(new BigInteger("189061250479"));
+        testSet.add(new BigInteger("2211744201787"));
+        testSet.add(new BigInteger("7828669742987"));
+        testSet.add(new BigInteger("48560209712519"));
+        testSet.add(new BigInteger("35872004189003"));
+        testSet.add(new BigInteger("737785058178599"));
+        testSet.add(new BigInteger("576460921650883"));
+        testSet.add(new BigInteger("1957432135202107"));
+        testSet.add(new BigInteger("2450609331732137")); */
+
+        // loop through all test values
+        for (BigInteger value : testSet)
+        {
+            fermat(value);
+            dixon(value);
+        }
+        
+    }
+
 
   
 /******************Following code is taken from sqrt_BigIntegers.docx***********************/
