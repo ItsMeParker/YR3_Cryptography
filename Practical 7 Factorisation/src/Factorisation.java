@@ -347,15 +347,30 @@ System.out.println("a pow_list = " + String.valueOf(pow_list) + "\n");
                     // powerSet of a is already even 
                     if (isEvenPowList(pow_list) == true)
                     {
+                        
+System.out.println(" IS EVEN OUTPUT GEN");
+
                         // add pow_list to end of pair_list to be used in calculating factors, 
                         // since it wont be added by addToPairList if the first powerList calculated is even
                         pow_list.add(new BigInteger("-1"));
                         pair_list.add(pow_list);
-                        twoSquareFound = true;
+                    
+                        factors = genDixonFactors(pair_list, base, input);
+
+                        // if factors for input are 1 * input 
+                        if ((factors.getKey().compareTo(BigInteger.ONE) == 0) || (factors.getValue().compareTo(BigInteger.ONE) == 0))
+                        {
+                            // remove powerSet that generates 1 * input from pair_list
+                            pair_list.remove(pair_list.size()-1);
+                        }
+                        else
+                        {
+                            // exit loop and print factors found
+                            twoSquareFound = true;
+                            break;
+                        }
 
 System.out.println("b/c pow_list was even add to end of pair_list = " + String.valueOf(pair_list) + "\n");
-
-                        break;
                     }
                     // else try to combine the powerSet with other powersets hoping to make an even powerSet
                     else
@@ -372,9 +387,22 @@ System.out.println("try to combine pow_list with pair_list = " + String.valueOf(
                         if (pair_list.get(pair_list.size()-1).size() == (base.size() + 2))
                         {
 System.out.println(" even found so break out\n");
+System.out.println(" COMBINE OUTPUT GEN");
+                            factors = genDixonFactors(pair_list, base, input);
 
-                            twoSquareFound = true;
-                            break;
+                            // if factors for input are 1 * input 
+                            if ((factors.getKey().compareTo(BigInteger.ONE) == 0) || (factors.getValue().compareTo(BigInteger.ONE) == 0))
+                            {
+                                // remove powerSet that generates 1 * input from pair_list
+                                pair_list.remove(pair_list.size()-1);
+                            }
+                            else
+                            {
+                                // exit loop and print factors found
+                                twoSquareFound = true;
+                                break;
+                            }
+
                         }
                         // else pow_list was added to end of pair_list                      
                     }   
@@ -387,6 +415,28 @@ System.out.println(" even found so break out\n");
             validX = false;          
         }
 
+
+     	// output the factors  
+        textOutput.append("Dixon factorisation of n = " + String.valueOf(input) + "= x*y = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n\n");
+    }
+
+/****************************************************************
+* Function name   : genDixonFactors
+*    returns      : pair
+*    arg1         : ArrayList<BigInteger> : pow_list
+* Created by      : Connor Parker
+* Created on      : 09/12/2018
+* Description     : function to check if all powers in a powerSet are even
+* Notes           : 
+***************************************************************/
+
+    private Pair genDixonFactors(ArrayList<ArrayList<BigInteger>> pair_list , ArrayList<BigInteger> base, BigInteger input)
+    {
+
+        Pair<BigInteger, BigInteger> factorsReturn = new Pair<>(BigInteger.ZERO,BigInteger.ZERO);
+        BigInteger x = BigInteger.valueOf(0);
+        BigInteger y = BigInteger.valueOf(1);
+        
         // Use the even pow_list to work out the square number y
         // for all positions in a powerset of length base.size() + 1
         // (note the +1 to base.size() since first element is the value of x
@@ -415,11 +465,10 @@ System.out.println("y = " + String.valueOf(y) + "\n");
 
 
         //                    gcd(N, x+y)             gcd(N, abs(x-y))
-        factors = new Pair<>((input.gcd((x.add(y)))),(input.gcd(x.subtract(y).abs())));
-System.out.println("factors = gcd(" + String.valueOf(input) + "," + String.valueOf(x) + "+" + String.valueOf(y) + ") = " + String.valueOf(factors.getKey()) + " * gcd(" + String.valueOf(input) + "," + String.valueOf(x) + "-" + String.valueOf(y) + ") = " + String.valueOf(factors.getValue()) + "\n");
+        factorsReturn = new Pair<>((input.gcd((x.add(y)))),(input.gcd(x.subtract(y).abs())));
+System.out.println("factors = gcd(" + String.valueOf(input) + "," + String.valueOf(x) + "+" + String.valueOf(y) + ") = " + String.valueOf(factorsReturn.getKey()) + " * gcd(" + String.valueOf(input) + "," + String.valueOf(x) + "-" + String.valueOf(y) + ") = " + String.valueOf(factorsReturn.getValue()) + "\n");
 
-     	// output the factors  
-        textOutput.append("Dixon factorisation of n = " + String.valueOf(input) + "= x*y = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n\n");
+        return factorsReturn;
     }
 
 /****************************************************************
@@ -509,8 +558,8 @@ System.out.println("factors = gcd(" + String.valueOf(input) + "," + String.value
                 
                 if (isEvenPowList(tempPowerSet) == true)
                 {
-                    // remove powerSet in pair_list that combined with pow_list to make an even power set
-                    pair_list.remove(i);
+                    // add pow_list to pair_list so that if the factors of the even pow list generated are 1 * input other numbers can be combined with pow_set
+                    pair_list.add(pow_list);
                     evenFound = true;
                 }
             }            
