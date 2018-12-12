@@ -303,14 +303,14 @@ Factorisation
                 // code for selecting specific values of x for testing purposes
                 /*if (loopx == 0)
                 {
-                    x = new BigInteger("80");
+                    x = new BigInteger("8688192");
                     loopx++;
                 }
                 else if (loopx == 1)
                 {
-                    x = new BigInteger("80");
+                    //x = new BigInteger("80");
                     loopx++;
-                } */
+                }  */
                     
                 // exit loop if x is in range (sqrt(N) < x < N)
                 // compareTo "returns -1, 0, or 1 as this BigDecimal is numerically less than, equal to, or greater than val."
@@ -319,6 +319,9 @@ Factorisation
                     validX = true;
                 }                    
             }
+System.out.println("=============================================================");
+
+System.out.println("generated x = " + String.valueOf(x) + "\n");
                         
             // if number has been used before
             if (usedBefore.containsKey(x))
@@ -329,9 +332,11 @@ Factorisation
             {
                 // a = x^2 mod N;
                 a = x.multiply(x).mod(input);
-                
+System.out.println("generated a = " + String.valueOf(a) + "\n");
                 // check if a is b smooth, return powerSet if it is {} if not 
                 pow_list = isBSmooth(x,a, base);
+System.out.println("a pow_list = " + String.valueOf(pow_list) + "\n");
+
                 // if a is not b-smooth
                 if (pow_list.isEmpty())
                 {
@@ -339,24 +344,35 @@ Factorisation
                 }
                 else
                 {
+                    // powerSet of a is already even 
                     if (isEvenPowList(pow_list) == true)
                     {
-                        // add pow_list to pair_list to be used in calculating factors, 
+                        // add pow_list to end of pair_list to be used in calculating factors, 
                         // since it wont be added by addToPairList if the first powerList calculated is even
+                        pow_list.add(new BigInteger("-1"));
                         pair_list.add(pow_list);
+                        twoSquareFound = true;
+
+System.out.println("b/c pow_list was even add to end of pair_list = " + String.valueOf(pair_list) + "\n");
+
                         break;
                     }
+                    // else try to combine the powerSet with other powersets hoping to make an even powerSet
                     else
                     {
                         //add pow_list to pair_list
                         //when adding it we try to combine pow_list with 
                         //all existing one in pair_list,                        
-                        pair_list = addToPairList(pow_list,pair_list);                                        // 0 1 2 3
+                        pair_list = addToPairList(pow_list,pair_list);      
+System.out.println("try to combine pow_list with pair_list = " + String.valueOf(pair_list) + " -1 on end means it is even\n");
+                            // 0 1 2 3
                         // if the length of last list in pair_list == size of base + 2                           eg base {2,3,5,7}      size = 4 + 2 = 6
                         // then 0 was added by addToPairList and it is twoSquare/even                            powerSet{x,a,b,c,d}    size = 5
                         // (note the +2 to account for starting at zero and having x at position zero)      even powerSet{x,a,b,c,d,-1} size = 6
                         if (pair_list.get(pair_list.size()-1).size() == (base.size() + 2))
                         {
+System.out.println(" even found so break out\n");
+
                             twoSquareFound = true;
                             break;
                         }
@@ -377,22 +393,30 @@ Factorisation
         //  but we don't want to use the -1 added on the end by addToPairList)
         for (int i = 0; i < (base.size() +1); i++)
         {
+            //  textOutput.append(String.valueOf(pair_list.get(pair_list.size()-1).get(i) + ","));
             if (i == 0)
             {       
                 // make x = first element in last list in pair_list             
                 x = pair_list.get(pair_list.size()-1).get(i);
-
+System.out.println("x = " + String.valueOf(x) + "\n");
             }
             else
             {
+System.out.println("y = " + String.valueOf(y) + " * " + String.valueOf(base.get(i-1).pow(((int)(0.5 * pair_list.get(pair_list.size()-1).get(i).intValue())))) + "\n");
                 // y = (elementOfBase^(0.5*power)) * (nextElementOfBase^(0.5*power)) * . . . * (lastElementOfBase^(0.5*power))
                 y = y.multiply(base.get(i-1).pow(((int)(0.5 * pair_list.get(pair_list.size()-1).get(i).intValue()))));    
+
             }
 
         }
+        textOutput.append("\n");
+
+System.out.println("y = " + String.valueOf(y) + "\n");
+
 
         //                    gcd(N, x+y)             gcd(N, abs(x-y))
         factors = new Pair<>((input.gcd((x.add(y)))),(input.gcd(x.subtract(y).abs())));
+System.out.println("factors = gcd(" + String.valueOf(input) + "," + String.valueOf(x) + "+" + String.valueOf(y) + ") = " + String.valueOf(factors.getKey()) + " * gcd(" + String.valueOf(input) + "," + String.valueOf(x) + "-" + String.valueOf(y) + ") = " + String.valueOf(factors.getValue()) + "\n");
 
      	// output the factors  
         textOutput.append("Dixon factorisation of n = " + String.valueOf(input) + "= x*y = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n\n");
@@ -413,7 +437,7 @@ Factorisation
         boolean allEven = true;
 
         // loop through powers in pow_list
-        for ( int i = 0; i < (pow_list.size() - 1); i ++)
+        for ( int i = 0; i < pow_list.size(); i ++)
         {       
             if (i == 0)
             {
@@ -457,33 +481,41 @@ Factorisation
         ArrayList<BigInteger> tempPowerSet = new ArrayList<>();
         boolean evenFound = false;
 
-        // loop through all powerSets in pair_list
-        for (int i = 0; i < pair_list.size(); i++)  
+        if (isEvenPowList(pow_list) == true)
         {
-            // for all positions in pow_list powerSet
-            for (int j = 0; j < pow_list.size(); j++)
-            {
-                if (j == 0)
-                {                   
-                    // times values in first postion of pow_list and first p of pair_list
-                    tempPowerSet.add(pair_list.get(i).get(j).multiply(pow_list.get(j)));
-                }
-                else
-                {
-                    // add together positions in pair_list and pow_list and store in tempPowerSet
-                    tempPowerSet.add(pair_list.get(i).get(j).add(pow_list.get(j)));
-                }
-
-            }
-            
-            if (isEvenPowList(tempPowerSet) == true)
-            {
-                // remove powerSet in pair_list that combined with pow_list to make an even power set
-                pair_list.remove(i);
-                evenFound = true;
-            }
+            tempPowerSet = pow_list;
+            evenFound = true;
         }
-        
+        else 
+        {
+            // loop through all powerSets in pair_list and try to combine with pos_list
+            for (int i = 0; i < pair_list.size(); i++)  
+            {
+                // for all positions in pow_list powerSet
+                for (int j = 0; j < pow_list.size(); j++)
+                {
+                    if (j == 0)
+                    {                   
+                        // times values in first postion of pow_list and first p of pair_list
+                        tempPowerSet.add(pair_list.get(i).get(j).multiply(pow_list.get(j)));
+                    }
+                    else
+                    {
+                        // add together positions in pair_list and pow_list and store in tempPowerSet
+                        tempPowerSet.add(pair_list.get(i).get(j).add(pow_list.get(j)));
+                    }
+
+                }
+                
+                if (isEvenPowList(tempPowerSet) == true)
+                {
+                    // remove powerSet in pair_list that combined with pow_list to make an even power set
+                    pair_list.remove(i);
+                    evenFound = true;
+                }
+            }            
+        }
+
         if (evenFound == false)
         {
             pair_list.add(pow_list);
