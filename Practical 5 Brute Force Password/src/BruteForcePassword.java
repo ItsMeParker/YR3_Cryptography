@@ -305,42 +305,52 @@ Brute Force Password
         Object selected = chooseMethod.getSelectedItem();
         String method = selected.toString();
         
-        // if either map is unpopulated call function to populate them
-        if (charaSet.isEmpty() || keySet.isEmpty())
+        //check hash entered is correct length and composition
+        if ((passwordHash.length() == 40) && (passwordHash.matches("^[a-z0-9]*")))
         {
-            initialiseMaps();
-        }
+            // if either map is unpopulated call function to populate them
+            if (charaSet.isEmpty() || keySet.isEmpty())
+            {
+                initialiseMaps();
+            }
 
-        // start a timer to measure CPU time taken to break passwordk
-        timeStart();
-        
-        // call different method depending on option chosen
-        switch (method)
+            // start a timer to measure CPU time taken to break passwordk
+            timeStart();
+            
+            // call different method depending on option chosen
+            switch (method)
+            {
+                case "Simple":
+                    // call function for simple brute force password breaking from
+                    simpleBreak(passwordHash,"");
+                    break;
+                case "Simple Threaded":
+                    textOutput.setText("Simple Threaded Breaking not yet Implemented");
+                    // create threads and call simpleBreak with different start strings
+                    // create list of threads so that once one finds it they can be killed
+                    // https://dzone.com/articles/java-thread-tutorial-creating-threads-and-multithr
+                    break;
+                case "Dictionary":
+                    textOutput.setText("Dictionary Breaking not yet Implemented");
+                    break;
+                case "Dictionary Threaded":
+                    textOutput.setText("Dictionary Threaded Breaking not yet Implemented");
+                    break;
+                case "Rainbow":
+                    textOutput.setText("Rainbow Breaking not yet Implemented");
+
+                    break;
+            }
+            
+            // end timer started above and output time taken
+            textOutput.append(" Broken in: " +  String.valueOf(timeStop("showMs")) + " Milli Seconds\n\n");      
+        }
+        else
         {
-            case "Simple":
-                // call function for simple brute force password breaking from
-                simpleBreak(passwordHash,"");
-                break;
-            case "Simple Threaded":
-                textOutput.setText("Simple Threaded Breaking not yet Implemented");
-                // create threads and call simpleBreak with different start strings
-                // create list of threads so that once one finds it they can be killed
-                // https://dzone.com/articles/java-thread-tutorial-creating-threads-and-multithr
-                break;
-            case "Dictionary":
-                textOutput.setText("Dictionary Breaking not yet Implemented");
-                break;
-            case "Dictionary Threaded":
-                textOutput.setText("Dictionary Threaded Breaking not yet Implemented");
-                break;
-            case "Rainbow":
-                textOutput.setText("Rainbow Breaking not yet Implemented");
-
-                break;
+            textOutput.append("Incorrect Hash. Incorrect Length or Non Alpha Numeric Character or Capital Letter included\n\n");
         }
         
-        // end timer started above and output time taken
-        textOutput.append(" Broken in: " +  String.valueOf(timeStop("showMs")) + " Milli Seconds\n");             
+       
 
     }//GEN-LAST:event_ForceMouseClicked
 

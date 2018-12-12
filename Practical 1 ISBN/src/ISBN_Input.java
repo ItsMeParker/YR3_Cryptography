@@ -98,7 +98,7 @@ public class ISBN_Input extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(input2, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(input1)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(verify1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -145,7 +145,7 @@ public class ISBN_Input extends javax.swing.JFrame {
                     .addComponent(calculate, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(126, Short.MAX_VALUE))
         );
 
         pack();
@@ -279,7 +279,7 @@ Credit Card Checking
         //remove dashes from card number
         CARDInput = CARDInput.replace("-", ""); 
         
-        if (CARDInput.length() == 16)
+        if ((CARDInput.length() == 16) && (CARDInput.matches("^[0-9]*$") == true))
         {
             // loop through the 16 numbers in the card
             for (int x = 0; x < 16; x++)
@@ -325,7 +325,7 @@ Credit Card Checking
         } // end of if card == 16
         else
         {
-            validationOutput.append("Card Number Of Wrong Length");
+            validationOutput.append("Card Number Of Wrong Length And Or Containing Non Number Characters");
         }
     }//GEN-LAST:event_verify2MouseClicked
 

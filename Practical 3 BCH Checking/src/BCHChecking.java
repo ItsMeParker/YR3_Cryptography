@@ -61,12 +61,12 @@ public class BCHChecking extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(sixInput, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(sixInput)
                             .addComponent(tenInput))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(generate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(decode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -105,8 +105,8 @@ Six Digit generation
         // array to hold code as integers with space for check digits
         int[] finalCode = new int[10];
                
-        //check code entered is correct length
-        if (digits.length() == 6)
+        //check code entered is correct length and composition
+        if ((digits.length() == 6) && (digits.matches("^[0-9]*$") == true))
         {
             // loop through the 6 numbers in the code 
             for (int x = 0; x < 6; x++)
@@ -144,7 +144,7 @@ Six Digit generation
         } 
         else
         {
-            textOutput.append("Enter Code of Six Digits");
+            textOutput.append("Enter Code of Six Digits And Or Remove Non Number Characters");
         }
     }//GEN-LAST:event_generateMouseClicked
 
@@ -168,8 +168,8 @@ ten Digit decoding
         // ints for error position and magnitude calculation.
         int posiOne = 0, posiTwo = 0, magniA = 0, magniB = 0;
         
-        //check code entered is correct length
-        if (digits.length() == 10)
+        //check code entered is correct length and composition
+        if ((digits.length() == 10) && (digits.matches("^[0-9]*$") == true))
         {
             // loop through the 10 numbers in the code 
             for (int x = 0; x < 10; x++)
@@ -327,7 +327,7 @@ ten Digit decoding
         } 
         else
         {
-            textOutput.append("Enter Code of Ten Digits");
+            textOutput.append("Enter Code of Ten Digits And Or Remove Non Number Characters");
         }
     }//GEN-LAST:event_decodeMouseClicked
   

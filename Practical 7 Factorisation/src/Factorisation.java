@@ -114,30 +114,36 @@ Factorisation
 **************************************************/
     
     private void factoriseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_factoriseMouseClicked
-        // convert string input to BigInteger with the BigInteger constructor
-        BigInteger input = new BigInteger(intInput.getText());
         
+        String stringInput = intInput.getText();
         // get method of factorisation selected in drop down box
         Object selected = factorisationMethod.getSelectedItem();
         String method = selected.toString();
         
-
-        
-        // call different method depending on option chosen
-        switch (method)
+        if ((stringInput.matches("^[0-9]*$") == true) && (stringInput.length() > 0))
         {
-            case "Fermat":
-            		fermat(input);
-                               
-                break;
-            case "Dixon":
-            		dixon(input);
-                break;
-            case "Test All":
-                    testAll();
-                break;
+            // convert string input to BigInteger with the BigInteger constructor
+            BigInteger input = new BigInteger(stringInput);
+
+            // call different method depending on option chosen
+            switch (method)
+            {
+                case "Fermat":
+                        fermat(input);
+                                   
+                    break;
+                case "Dixon":
+                        dixon(input);
+                    break;
+                case "Test All":
+                        testAll();
+                    break;
+            }
         }
-        
+        else
+        {
+            textOutput.append("Incorrect Input. Input Number or Remove Non Numeric Characters\n");
+        } 
         
     }//GEN-LAST:event_factoriseMouseClicked
 
@@ -190,11 +196,11 @@ Factorisation
         	// A = A + 1
             A = A.add(new BigInteger("1"));
         	
-        	// Bsq = A*A - N
-        	Bsq =  A.multiply(A).subtract(N);
+            // Bsq = A*A - N
+            Bsq =  A.multiply(A).subtract(N);
 
-        	// check if Bsq is now square
-        	square = isSquare(Bsq);
+            // check if Bsq is now square
+            square = isSquare(Bsq);
         }
         
         // add                A - sqrt(Bsq)            and             A + sqrt(Bsq) to pair to be returned 
