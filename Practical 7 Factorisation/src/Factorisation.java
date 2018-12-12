@@ -319,9 +319,6 @@ Factorisation
                     validX = true;
                 }                    
             }
-System.out.println("=============================================================");
-
-System.out.println("generated x = " + String.valueOf(x) + "\n");
                         
             // if number has been used before
             if (usedBefore.containsKey(x))
@@ -332,11 +329,8 @@ System.out.println("generated x = " + String.valueOf(x) + "\n");
             {
                 // a = x^2 mod N;
                 a = x.multiply(x).mod(input);
-System.out.println("generated a = " + String.valueOf(a) + "\n");
                 // check if a is b smooth, return powerSet if it is {} if not 
                 pow_list = isBSmooth(x,a, base);
-System.out.println("a pow_list = " + String.valueOf(pow_list) + "\n");
-
                 // if a is not b-smooth
                 if (pow_list.isEmpty())
                 {
@@ -347,9 +341,6 @@ System.out.println("a pow_list = " + String.valueOf(pow_list) + "\n");
                     // powerSet of a is already even 
                     if (isEvenPowList(pow_list) == true)
                     {
-                        
-System.out.println(" IS EVEN OUTPUT GEN");
-
                         // add pow_list to end of pair_list to be used in calculating factors, 
                         // since it wont be added by addToPairList if the first powerList calculated is even
                         pow_list.add(new BigInteger("-1"));
@@ -370,7 +361,6 @@ System.out.println(" IS EVEN OUTPUT GEN");
                             break;
                         }
 
-System.out.println("b/c pow_list was even add to end of pair_list = " + String.valueOf(pair_list) + "\n");
                     }
                     // else try to combine the powerSet with other powersets hoping to make an even powerSet
                     else
@@ -379,15 +369,12 @@ System.out.println("b/c pow_list was even add to end of pair_list = " + String.v
                         //when adding it we try to combine pow_list with 
                         //all existing one in pair_list,                        
                         pair_list = addToPairList(pow_list,pair_list);      
-System.out.println("try to combine pow_list with pair_list = " + String.valueOf(pair_list) + " -1 on end means it is even\n");
-                            // 0 1 2 3
+                                                                                                                       // 0 1 2 3
                         // if the length of last list in pair_list == size of base + 2                           eg base {2,3,5,7}      size = 4 + 2 = 6
                         // then 0 was added by addToPairList and it is twoSquare/even                            powerSet{x,a,b,c,d}    size = 5
                         // (note the +2 to account for starting at zero and having x at position zero)      even powerSet{x,a,b,c,d,-1} size = 6
                         if (pair_list.get(pair_list.size()-1).size() == (base.size() + 2))
                         {
-System.out.println(" even found so break out\n");
-System.out.println(" COMBINE OUTPUT GEN");
                             factors = genDixonFactors(pair_list, base, input);
 
                             // if factors for input are 1 * input 
@@ -448,25 +435,18 @@ System.out.println(" COMBINE OUTPUT GEN");
             {       
                 // make x = first element in last list in pair_list             
                 x = pair_list.get(pair_list.size()-1).get(i);
-System.out.println("x = " + String.valueOf(x) + "\n");
             }
             else
             {
-System.out.println("y = " + String.valueOf(y) + " * " + String.valueOf(base.get(i-1).pow(((int)(0.5 * pair_list.get(pair_list.size()-1).get(i).intValue())))) + "\n");
                 // y = (elementOfBase^(0.5*power)) * (nextElementOfBase^(0.5*power)) * . . . * (lastElementOfBase^(0.5*power))
                 y = y.multiply(base.get(i-1).pow(((int)(0.5 * pair_list.get(pair_list.size()-1).get(i).intValue()))));    
 
             }
 
         }
-        textOutput.append("\n");
-
-System.out.println("y = " + String.valueOf(y) + "\n");
-
 
         //                    gcd(N, x+y)             gcd(N, abs(x-y))
         factorsReturn = new Pair<>((input.gcd((x.add(y)))),(input.gcd(x.subtract(y).abs())));
-System.out.println("factors = gcd(" + String.valueOf(input) + "," + String.valueOf(x) + "+" + String.valueOf(y) + ") = " + String.valueOf(factorsReturn.getKey()) + " * gcd(" + String.valueOf(input) + "," + String.valueOf(x) + "-" + String.valueOf(y) + ") = " + String.valueOf(factorsReturn.getValue()) + "\n");
 
         return factorsReturn;
     }
