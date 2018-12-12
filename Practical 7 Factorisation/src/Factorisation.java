@@ -100,8 +100,8 @@ public class Factorisation extends javax.swing.JFrame {
                     .addComponent(factorisationMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(factorise))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
@@ -254,7 +254,7 @@ Factorisation
     private void dixon(BigInteger input)
     {
         // list of prime numbers pulled from https://primes.utm.edu/lists/small/1000.txt
-        ArrayList<BigInteger> base = new ArrayList<BigInteger>(Arrays.asList(new BigInteger("2"  ),new BigInteger("3"  ),new BigInteger("5"  ),new BigInteger("7"  ),new BigInteger("1"  ),new BigInteger("3"  ),new BigInteger("7"  ),new BigInteger("9"  ),new BigInteger("3"  ),new BigInteger("9"  ),
+        ArrayList<BigInteger> base = new ArrayList<BigInteger>(Arrays.asList(new BigInteger("2"  ),new BigInteger("3"  ),new BigInteger("5"  ),new BigInteger("7"  ),new BigInteger("11" ),new BigInteger("13" ),new BigInteger("17" ),new BigInteger("19" ),new BigInteger("23" ),new BigInteger("29" ),
                                                                              new BigInteger("31" ),new BigInteger("37" ),new BigInteger("41" ),new BigInteger("43" ),new BigInteger("47" ),new BigInteger("53" ),new BigInteger("59" ),new BigInteger("61" ),new BigInteger("67" ),new BigInteger("71" ),
                                                                              new BigInteger("73" ),new BigInteger("79" ),new BigInteger("83" ),new BigInteger("89" ),new BigInteger("97" ),new BigInteger("01" ),new BigInteger("03" ),new BigInteger("07" ),new BigInteger("09" ),new BigInteger("13" ),
                                                                              new BigInteger("127"),new BigInteger("131"),new BigInteger("137"),new BigInteger("139"),new BigInteger("149"),new BigInteger("151"),new BigInteger("157"),new BigInteger("163"),new BigInteger("167"),new BigInteger("173"),
@@ -287,6 +287,9 @@ Factorisation
         BigInteger y = BigInteger.valueOf(1);
         Pair<BigInteger, BigInteger> factors = new Pair<>(BigInteger.ZERO,BigInteger.ZERO);
         
+        // code for selecting specific values of x for testing purposes
+        //int loopx = 0;
+        
         // loop until two square numbers are found
         while(twoSquareFound == false)
         {
@@ -297,6 +300,18 @@ Factorisation
                 // "Constructs a randomly generated BigInteger, uniformly distributed over the range 0 to (2numBits - 1), inclusive."
                 x = new BigInteger(input.bitLength(), new Random());
 
+                // code for selecting specific values of x for testing purposes
+                /*if (loopx == 0)
+                {
+                    x = new BigInteger("80");
+                    loopx++;
+                }
+                else if (loopx == 1)
+                {
+                    x = new BigInteger("80");
+                    loopx++;
+                } */
+                    
                 // exit loop if x is in range (sqrt(N) < x < N)
                 // compareTo "returns -1, 0, or 1 as this BigDecimal is numerically less than, equal to, or greater than val."
                 if ((x.compareTo(getIntSqrt(input)) == 1) && (x.compareTo(input) == -1))
@@ -611,8 +626,8 @@ Factorisation
         testSet.add(new BigInteger("14674291"));
         testSet.add(new BigInteger("23128513"));
         testSet.add(new BigInteger("254855791"));
-        /*testSet.add(new BigInteger("428279361"));
-        testSet.add(new BigInteger("159649552547"));
+        testSet.add(new BigInteger("428279361"));
+        /*testSet.add(new BigInteger("159649552547"));
         testSet.add(new BigInteger("189061250479"));
         testSet.add(new BigInteger("2211744201787"));
         testSet.add(new BigInteger("7828669742987"));
@@ -632,7 +647,33 @@ Factorisation
         
     }
 
+/* Result of testAll
+    
+Fermat factorisation of n = 224573= x*y = 71 * 3163
+Dixon factorisation of n = 224573= x*y = 224573 * 1
 
+Fermat factorisation of n = 299203= x*y = 433 * 691
+Dixon factorisation of n = 299203= x*y = 299203 * 1
+
+Fermat factorisation of n = 1963867= x*y = 941 * 2087
+Dixon factorisation of n = 1963867= x*y = 1963867 * 1
+
+Fermat factorisation of n = 6207251= x*y = 857 * 7243
+Dixon factorisation of n = 6207251= x*y = 6207251 * 1
+
+Fermat factorisation of n = 14674291= x*y = 2267 * 6473
+Dixon factorisation of n = 14674291= x*y = 2267 * 6473
+
+Fermat factorisation of n = 23128513= x*y = 3821 * 6053
+Dixon factorisation of n = 23128513= x*y = 1 * 1
+
+Fermat factorisation of n = 254855791= x*y = 509 * 500699
+Dixon factorisation of n = 254855791= x*y = 500699 * 509
+
+Fermat factorisation of n = 428279361= x*y = 16321 * 26241
+Dixon factorisation of n = 428279361= x*y = 3 * 3
+
+    */
   
 /******************Following code is taken from sqrt_BigIntegers.docx***********************/
 
