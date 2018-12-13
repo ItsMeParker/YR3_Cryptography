@@ -404,16 +404,18 @@ Factorisation
 
 
      	// output the factors  
-        textOutput.append("Dixon factorisation of n = " + String.valueOf(input) + "= x*y = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n\n");
+        textOutput.append("Dixon factorisation of n = " + String.valueOf(input) + "= x*y = " + String.valueOf(factors.getKey()) + " * " + String.valueOf(factors.getValue()) + "\n");
     }
 
 /****************************************************************
 * Function name   : genDixonFactors
 *    returns      : pair
-*    arg1         : ArrayList<BigInteger> : pow_list
+*    arg1         : ArrayList<ArrayList<BigInteger>> : pair_list
+*    arg2         : ArrayList<BigInteger>            : base
+*    arg3         : ArrayList<BigInteger>            : input
 * Created by      : Connor Parker
-* Created on      : 09/12/2018
-* Description     : function to check if all powers in a powerSet are even
+* Created on      : 10/12/2018
+* Description     : function to generate and return the factors of input based on the powerSet stored in the last position of pair_list
 * Notes           : 
 ***************************************************************/
 
@@ -484,7 +486,6 @@ Factorisation
             }
         }
             
-
         return allEven;
     }
 
@@ -680,15 +681,15 @@ Factorisation
     {
         ArrayList<BigInteger> testSet = new ArrayList<>();
 
-        testSet.add(new BigInteger("224573"));
+        /*testSet.add(new BigInteger("224573"));
         testSet.add(new BigInteger("299203"));
-        testSet.add(new BigInteger("1963867"));
+        testSet.add(new BigInteger("1963867"))
         testSet.add(new BigInteger("6207251"));
         testSet.add(new BigInteger("14674291"));
         testSet.add(new BigInteger("23128513"));
         testSet.add(new BigInteger("254855791"));
-        testSet.add(new BigInteger("428279361"));
-        /*testSet.add(new BigInteger("159649552547"));
+        testSet.add(new BigInteger("428279361"));;*/
+        testSet.add(new BigInteger("159649552547"));
         testSet.add(new BigInteger("189061250479"));
         testSet.add(new BigInteger("2211744201787"));
         testSet.add(new BigInteger("7828669742987"));
@@ -697,13 +698,17 @@ Factorisation
         testSet.add(new BigInteger("737785058178599"));
         testSet.add(new BigInteger("576460921650883"));
         testSet.add(new BigInteger("1957432135202107"));
-        testSet.add(new BigInteger("2450609331732137")); */
+        testSet.add(new BigInteger("2450609331732137"));  /**/
+
+        timeStart();
 
         // loop through all test values
         for (BigInteger value : testSet)
         {
             fermat(value);
-            dixon(value);
+            textOutput.append("In " + timeCheck("showMs") + "ms\n");
+            //dixon(value);
+            //textOutput.append("In " + timeCheck("showMs") + "ms\n\n");
         }
         
     }
@@ -711,29 +716,74 @@ Factorisation
 /* Result of testAll
     
 Fermat factorisation of n = 224573= x*y = 71 * 3163
-Dixon factorisation of n = 224573= x*y = 224573 * 1
+In 8ms
+Dixon factorisation of n = 224573= x*y = 3163 * 71
+In 267ms
 
 Fermat factorisation of n = 299203= x*y = 433 * 691
-Dixon factorisation of n = 299203= x*y = 299203 * 1
+In 1ms
+Dixon factorisation of n = 299203= x*y = 433 * 691
+In 22ms
 
 Fermat factorisation of n = 1963867= x*y = 941 * 2087
-Dixon factorisation of n = 1963867= x*y = 1963867 * 1
+In 0ms
+Dixon factorisation of n = 1963867= x*y = 2087 * 941
+In 1544ms
 
 Fermat factorisation of n = 6207251= x*y = 857 * 7243
-Dixon factorisation of n = 6207251= x*y = 6207251 * 1
+In 10ms
+Dixon factorisation of n = 6207251= x*y = 7243 * 857
+In 1758ms
 
 Fermat factorisation of n = 14674291= x*y = 2267 * 6473
-Dixon factorisation of n = 14674291= x*y = 2267 * 6473
+In 1ms
+Dixon factorisation of n = 14674291= x*y = 6473 * 2267
+In 16150ms
 
 Fermat factorisation of n = 23128513= x*y = 3821 * 6053
-Dixon factorisation of n = 23128513= x*y = 1 * 1
+In 0ms
+Dixon factorisation of n = 23128513= x*y = 3821 * 6053
+In 17911ms
 
 Fermat factorisation of n = 254855791= x*y = 509 * 500699
+In 47ms
 Dixon factorisation of n = 254855791= x*y = 500699 * 509
+In 338407ms
 
 Fermat factorisation of n = 428279361= x*y = 16321 * 26241
-Dixon factorisation of n = 428279361= x*y = 3 * 3
+In 0ms
+Dixon factorisation of n = 428279361= x*y = 22541019 * 19
+In 701508ms
 
+Fermat factorisation of n = 159649552547= x*y = 346201 * 461147
+In 13ms
+    
+Fermat factorisation of n = 189061250479= x*y = 372299 * 507821
+In 5ms
+    
+Fermat factorisation of n = 2211744201787= x*y = 500699 * 4417313
+In 157ms
+    
+Fermat factorisation of n = 7828669742987= x*y = 2000003 * 3914329
+In 22ms
+    
+Fermat factorisation of n = 48560209712519= x*y = 6850049 * 7089031
+In 0ms
+    
+Fermat factorisation of n = 35872004189003= x*y = 4327423 * 8289461
+In 70ms
+    
+Fermat factorisation of n = 737785058178599= x*y = 26657329 * 27676631
+In 2ms
+    
+Fermat factorisation of n = 576460921650883= x*y = 18983639 * 30366197
+In 98ms
+    
+Fermat factorisation of n = 1957432135202107= x*y = 42345469 * 46225303
+In 6ms
+    
+Fermat factorisation of n = 2450609331732137= x*y = 37164473 * 65939569
+In 330ms    
     */
   
 /******************Following code is taken from sqrt_BigIntegers.docx***********************/
@@ -789,6 +839,44 @@ Dixon factorisation of n = 428279361= x*y = 3 * 3
     }
     
 /**********************End of Code taken from sqrt_BigIntegers.docx******************************/
+
+/******************Following code is taken from measuringCPUtimeInJava.docx***********************/
+
+// a variable to remember the start time,  use the following methods
+long timer = 0;
+
+void timeStart() {
+        timer = System.currentTimeMillis();
+}
+
+/******************End of Code taken from measuringCPUtimeInJava.docx***********************/
+/******************Following code is heavily based on measuringCPUtimeInJava.docx***********************/
+// changes made to return timer value for sake of output to form
+
+long timeCheck(String s) 
+{
+        long timeCheck = System.currentTimeMillis() - timer;
+
+        if(s.equals("showMs") || s.equals(""))
+        {
+            // do nothing timer is already in milli seconds
+        }
+        else if(s.equals("showSec"))
+        {
+            timeCheck = timeCheck/1000;
+        }
+        else if(s.equals("showMin")) 
+        {
+            timeCheck = timeCheck/60000;
+        }
+
+        // reset timer to time from this point in time
+        timer = System.currentTimeMillis();
+
+        return timeCheck;
+ }
+
+/******************End of Code based on from measuringCPUtimeInJava.docx***********************/
 
 /**************************************************
 

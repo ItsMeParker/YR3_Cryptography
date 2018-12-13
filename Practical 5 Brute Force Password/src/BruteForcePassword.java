@@ -206,10 +206,10 @@ Brute Force Password
         *  just wanted to see if this would speed up password breaking, I'm pretty sure it wouldnt work for random strings but  
         *  would it change anything if the password contains english words?
         *  Password    a to z   sec     most common
-        1  this        1015     1        455
-        2  is          18       1        17
-        3  very        1165     1        1121
-        4  simple      978140   978      412590
+        1  this        1015     1       455
+        2  is          18       1       17
+        3  very        1165     1       1121
+        4  simple      978140   978     412590
         5  fail7       8454     8       24458
         6  5you5       45066    45      42569
         7  3crack      1462480  1462    1391144
@@ -218,6 +218,8 @@ Brute Force Password
         10 cannot      144186   144     494395
         11 4this4      1657574  1657    1637589
         12 6will       48527    48      45078
+    
+                TOTAL  5698836          5897506
         */
         charaSet.put(0, "e");
         charaSet.put(1, "a");
